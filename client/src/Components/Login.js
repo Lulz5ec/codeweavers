@@ -1,4 +1,5 @@
 import React , {useState} from "react";
+import {Link} from "react-router-dom"
 import { Card, Container } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles"
 import Button from '@material-ui/core/Button';
@@ -6,7 +7,7 @@ import TextInput from "@material-ui/core/TextField"
 const useStyles = makeStyles((theme) => ({
     container : {
         display : "flex",
-        alignItems : 'center',
+        alignItems : "center",
         justifyContent : "center",
         height : "100vh"
     },
@@ -20,8 +21,9 @@ const useStyles = makeStyles((theme) => ({
     header : {
        fontWeight : "bold",
        color : "#0846B0",
-       fontSize : "18px",
-       textAlign : "center"
+       fontSize : "25px",
+       textAlign : "center",
+       fontFamily : "emoji"
     },
     tabContainer : {
        margin : "20px 0px"  
@@ -72,6 +74,10 @@ const Login = () => {
           <TextInput value={passwordValue} type="password" onChange={changePasswordValue} variant="outlined" label="Password"/>    
         </div> 
         <Button className={classes.submitButton} variant="contained" color="primary">Login</Button>   
+
+        <div style = {{fontSize : "15px"}}>
+          Don't have an account? <Link to = "/register" style = {{fontSize : "17px", textDecoration : "None", color : "#0000A0"}}>Register&#8594;</Link>
+        </div>
       </Card>
       </Container>
   )
