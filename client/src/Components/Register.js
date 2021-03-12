@@ -144,19 +144,19 @@ const Register = () => {
         </Tabs>
         
         <div className={classes.inputContainer}>
-          <TextInput value={nameValue} onChange={changeNameValue} variant="outlined" label="Name" helperText={err.code === 0 ? err.error : ""}/>    
+          <TextInput required id="standard-required" value={nameValue} onChange={changeNameValue} variant="outlined" label="Name" helperText={err.code === 0 ? err.error : ""}/>    
         </div> 
         <div className={classes.inputContainer}>
-          <TextInput value={userNameValue} onChange={changeUserNameValue} variant="outlined" label="User Name" helperText={err.code === 1 ? err.error : ""}/>    
+          <TextInput required id="standard-required" value={userNameValue} onChange={changeUserNameValue} variant="outlined" label="User Name" helperText={err.code === 1 ? err.error : ""}/>    
         </div> 
         <div className={classes.inputContainer}>
-          <TextInput value={emailValue} onChange={changeEmailValue} variant="outlined" label="Email" helperText={err.code === 2 ? err.error : ""}/>    
+          <TextInput required id="standard-required" value={emailValue} onChange={changeEmailValue} variant="outlined" label="Email" helperText={err.code === 2 ? err.error : ""}/>    
         </div>
         <div className={classes.inputContainer}>
-          <TextInput value={phoneNumber} onChange={changePhoneNumber} variant="outlined" label="Contact Number" helperText={err.code === 3 ? err.error : ""}/>    
+          <TextInput required id="standard-required" value={phoneNumber} onChange={changePhoneNumber} variant="outlined" label="Contact Number" helperText={err.code === 3 ? err.error : ""}/>    
         </div> 
         <div className={classes.inputContainer}>
-          <TextInput value={passwordValue} type="password" onChange={changePasswordValue} variant="outlined" label="Password" helperText={err.code === 4 ? err.error : ""}/>    
+          <TextInput required id="standard-required" value={passwordValue} type="password" onChange={changePasswordValue} variant="outlined" label="Password" helperText={err.code === 4 ? err.error : ""}/>    
         </div> 
         <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleClick}>Create Your Account</Button>   
 

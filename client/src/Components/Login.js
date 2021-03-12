@@ -90,10 +90,10 @@ const Login = () => {
       <Card className={classes.card}>
         <div className={classes.header}>Login To ParkInSpace</div>
         <div className={classes.inputContainer}>
-          <TextInput value={userNameValue} onChange={changeUserNameValue} variant="outlined" label="User Name" helperText={err.code === 0 ? err.error : ""}/>    
+          <TextInput required id="standard-required" value={userNameValue} onChange={changeUserNameValue} variant="outlined" label="User Name" helperText={err.code === 0 ? err.error : ""}/>    
         </div> 
         <div className={classes.inputContainer}>
-          <TextInput value={passwordValue} type="password" onChange={changePasswordValue} variant="outlined" label="Password" helperText={err.code === 1 ? err.error : ""}/>    
+          <TextInput required id="standard-required" value={passwordValue} type="password" onChange={changePasswordValue} variant="outlined" label="Password" helperText={err.code === 1 ? err.error : ""}/>    
         </div> 
         <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleClick}>Login</Button>   
 
