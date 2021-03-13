@@ -1,11 +1,13 @@
-import React , {useState} from "react";
+import React , {useContext, useState} from "react";
 import {Link} from "react-router-dom"
 import { Card, Container } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles"
 import Button from '@material-ui/core/Button';
 import TextInput from "@material-ui/core/TextField"
 
+import {useHistory} from "react-router-dom";
 import axios from 'axios';
+import currentUserContext from '../Context/useContext'
 
 const useStyles = makeStyles((theme) => ({
     container : {
@@ -46,10 +48,13 @@ const useStyles = makeStyles((theme) => ({
 
 
 const Login = () => {
+  const {user,setUser} = useContext(currentUserContext)
   const [value, setValue] = useState(0)
   const [err, seterr] = useState({})
   const [userNameValue , setUserNameValue] = useState("")
   const [passwordValue , setPasswordValue] = useState("")
+  const history = useHistory();
+
 
   const changeUserNameValue = (e) => {
    const {value} = e.target;
@@ -65,20 +70,28 @@ const Login = () => {
     seterr(newerr);
   }
 
+  const setNewUser = (newUser) => {
+    setUser(newUser);
+  } 
+
   const handleClick = async (e) => {
+    handleError({})
     const url = "http://localhost:5000/login"
     try {
       const response = await axios.post(url, {
         username : userNameValue,
         password : passwordValue,
       })
-      const {data} = response;
+      const {user} = response.data;
 
-      if(data.username === userNameValue) {
-        console.log("in!!")
+      if(user) {
+        setNewUser(user);
+        localStorage.setItem('user', JSON.stringify(user));
+        history.push('/Profile')
       } else {
-        handleError(data);
+        handleError(response.data);
       }
+      console.log(response)
     } catch (error) {
       console.log(error);
     }

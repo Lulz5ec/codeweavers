@@ -6,6 +6,7 @@ const cors = require('cors');
 const registerRoutes = require('./routes/register.js'); 
 
 const loginRoutes = require('./routes/login.js'); 
+const userRoutes = require('./routes/user.js'); 
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(cors());
 
 app.use('/register', registerRoutes);
 app.use('/login', loginRoutes);
+app.use('/user', userRoutes);
 
 
 const connectionUrl = 'mongodb+srv://padityak79:pc10thebest@cluster0.8ypgq.mongodb.net/ParkINSpace?retryWrites=true&w=majority';

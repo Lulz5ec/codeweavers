@@ -6,7 +6,6 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Button from '@material-ui/core/Button';
 import TextInput from "@material-ui/core/TextField";
-import Chip from '@material-ui/core/Chip';
 import {useHistory} from "react-router-dom";
 
 import axios from "axios";
@@ -110,6 +109,7 @@ const Register = () => {
   }
 
   const handleClick = async () => {
+    handleError({})
     const url = "http://localhost:5000/register"
     const userCategory = value === 0 ? 'Admin' : 'Driver'
     try {
@@ -123,10 +123,12 @@ const Register = () => {
           })
           const {data} = response;
           if(data === "success") {
-              console.log("in!!")
+              alert('Registration Sucessfull!')
+              history.push('/login');
           } else {
             handleError(data);
           }
+          console.log(response);
     } catch (error) {
       console.log(error);
     }

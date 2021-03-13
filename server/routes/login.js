@@ -34,12 +34,12 @@ router.post('/', async (req,res) => {
             throw new Error('Your password is wrong')
         }
         
-        res.status(200).send(user);
+        res.status(200).json({user});
     } catch (error) {
         if(error.message) {
-            res.status(200).send({code : code, error : error.message});
+            res.status(200).json({code : code, error : error.message});
         } else {
-            res.status(400).send(error);
+            res.status(400).json({error});
         }
     }
 })
