@@ -4,9 +4,10 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const registerRoutes = require('./routes/register.js'); 
-
 const loginRoutes = require('./routes/login.js'); 
 const userRoutes = require('./routes/user.js'); 
+const parkingSpaceRoutes = require('./routes/parkingSpace.js')
+const configRoutes = require('./routes/config.js')
 
 const app = express();
 
@@ -20,6 +21,8 @@ app.use(cors());
 app.use('/register', registerRoutes);
 app.use('/login', loginRoutes);
 app.use('/user', userRoutes);
+app.use('/parkingSpace', parkingSpaceRoutes);
+app.use('/configRoutes', configRoutes);
 
 
 const connectionUrl = 'mongodb+srv://padityak79:pc10thebest@cluster0.8ypgq.mongodb.net/ParkINSpace?retryWrites=true&w=majority';

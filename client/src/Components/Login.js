@@ -41,14 +41,14 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     submitButton  : {
-        margin : "30px 0",
+        margin : 30,
         minWidth : "100%"
     }
 }))
 
 
 const Login = () => {
-  const {user,setUser} = useContext(currentUserContext)
+  const {user,setUser,currentParking, setCurrentParking} = useContext(currentUserContext)
   const [value, setValue] = useState(0)
   const [err, seterr] = useState({})
   const [userNameValue , setUserNameValue] = useState("")
@@ -76,7 +76,7 @@ const Login = () => {
 
   const handleClick = async (e) => {
     handleError({})
-    const url = "http://localhost:5000/login"
+    let url = "http://localhost:5000/login"
     try {
       const response = await axios.post(url, {
         username : userNameValue,
@@ -87,11 +87,22 @@ const Login = () => {
       if(user) {
         setNewUser(user);
         localStorage.setItem('user', JSON.stringify(user));
+        let parkingResponse
+
+        if(user.spaceid) {
+            url = "http://localhost:5000/parkingSpace/isActiveParking"
+            parkingResponse = await axios.get(url, {
+              params : {
+                spaceid : user.spaceid
+              }
+            })
+            setCurrentParking(parkingResponse.data)
+        }
+
         history.push('/Profile')
       } else {
         handleError(response.data);
       }
-      console.log(response)
     } catch (error) {
       console.log(error);
     }

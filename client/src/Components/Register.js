@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     submitButton  : {
-        margin : "30px 0"
+        margin : 30
     }
 }))
 

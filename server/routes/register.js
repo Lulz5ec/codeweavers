@@ -24,7 +24,7 @@ router.post('/', async (req,res) => {
 
         if(validator.isEmpty(email)) {
             code = 2
-            throw new Error('Name feild is mandatory')
+            throw new Error('Email feild is mandatory')
         }
 
         if(validator.isEmpty(phone)) {
@@ -34,7 +34,7 @@ router.post('/', async (req,res) => {
 
         if(validator.isEmpty(password)) {
             code = 4
-            throw new Error('Name feild is mandatory')
+            throw new Error('Password feild is mandatory')
         }
 
         if(!validator.isEmail(email)) {

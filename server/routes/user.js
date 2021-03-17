@@ -15,4 +15,58 @@ router.get('/findUserById', async (req,res) => {
     }
 })
 
+router.put('/updateUserProfile', async (req,res) => {
+    const user = req.body;
+    try {
+
+        const {_id, name, username, email, phone, password} = user
+        if(validator.isEmpty(name)) {
+            code = 0
+            throw new Error('Name feild is mandatory')
+        }
+
+        if(validator.isEmpty(username)) {
+            code = 1
+            throw new Error('User Name feild is mandatory')
+        }
+
+        if(validator.isEmpty(email)) {
+            code = 2
+            throw new Error('Email feild is mandatory')
+        }
+
+        if(validator.isEmpty(phone)) {
+            code = 3
+            throw new Error('Contact Number feild is mandatory')
+        }
+
+        if(validator.isEmpty(password)) {
+            code = 4
+            throw new Error('Password feild is mandatory')
+        }
+
+        if(!validator.isEmail(email)) {
+            code = 2
+            throw new Error('Email is invalid')
+        }
+
+        if(!validator.isMobilePhone(phone) || phone.length < 10) {
+            code = 3
+            throw new Error('Phone Number is invalid')
+        }
+
+        const updatedUser = await User.findByIdAndUpdate({_id : _id}, user, {
+            new : true
+        })
+
+        res.status(200).json({user : updatedUser});
+    } catch (error) {
+        if(error.message) {
+            res.status(200).json({code : code, error : error.message});
+        } else {
+            res.status(400).json({error});
+        }
+    }
+})
+
 module.exports = router;

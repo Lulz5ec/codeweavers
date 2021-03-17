@@ -8,17 +8,20 @@ const userSchema = mongoose.Schema({
 
     username : {
         type : String,
-        required : true
+        required : true,
+        unique : true
     },
     
     email : {
         type : String,
-        required : true
+        required : true,
+        unique : true
     },
 
     phone : {
         type : String,
-        required : true 
+        required : true,
+        unique : true
     },
     
     password : {
@@ -26,10 +29,16 @@ const userSchema = mongoose.Schema({
         required : true
     },
 
+    spaceid : {
+        type : String,
+        default : null
+    },
+
     category : {
         type : String,
         required : true
     }
+
 });
 
 const User = mongoose.model('User', userSchema);
