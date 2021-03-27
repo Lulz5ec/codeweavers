@@ -12,6 +12,11 @@ const useStyles = makeStyles((theme) => ({
         flexDirection : "column",
         alignItems : "center",
         justifyContent : "flex-start",
+        paddingTop : "40px",
+        [theme.breakpoints.down("xs")] : {
+          width : "90%",
+          paddingTop :" 20px"
+        }
     },
     head : {
         display : "flex",
@@ -19,26 +24,39 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1),
         marginBottom : theme.spacing(5),
         justifyContent : "start",
-        alignItems : "center"
+        alignItems : "center",
+        [theme.breakpoints.down("sm")] : {
+          width: "100%"
+        }
     },
     name : {
         fontFamily: "emoji",
         fontWeight : "300",
-        fontSize : 27
+        fontSize : 27,
+        [theme.breakpoints.down("sm")] : {
+          fontSize : 15
+        }
     },
     card : {
-        margin : 30,
+        margin : 10,
         width : 600, 
         padding : "30px",
         display : "flex",
         alignItems : "center",
-        flexDirection : "column"
+        flexDirection : "column",
+        [theme.breakpoints.down("sm")] : {
+          margin : 20,
+          width : "100%"
+        }
     },
     inputContainer : {
         marginTop : "20px",
         width : "100%",
         "& > div" : {
             width : "100%"   
+        },
+        [theme.breakpoints.down("sm")] : {
+          marginTop : "10px"
         }
     },
     submitButton  : {

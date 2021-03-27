@@ -12,14 +12,14 @@ router.get('/getAll', async (req,res) => {
             if(err) {
                 throw new Error('failed to load data and to send')
             } else {
-                res.send(parkingSpaces)
+                res.status(200).json({parkingspaces : parkingSpaces})
             }
         })
     } catch {
         if(error.message) {
-            res.status(200).send({code : code, error : error.message});
+            res.status(200).json({error : error.message});
         } else {
-            res.status(400).send(error);
+            res.status(400).json(error);
         }
     }
 })
@@ -116,13 +116,12 @@ router.put('/confirmParking', async (req,res) => {
 })
 
 router.put('/updateParking', async (req,res) => {
-    const {spaceid, userid, vehiclenumber, exitdate} = req.body
+    const {spaceid, exitdate} = req.body
     try {
         const updatedParkingSpace = await ParkingSpace.findOneAndUpdate({spaceid : spaceid}, {
-            userid : userid,
             exitdate : exitdate
-        });
-        res.send(200)
+        },{new  : true});
+        res.status(200)
     } catch (error) {
         res.send(400).json({error: error.message})
     }
@@ -137,15 +136,17 @@ router.put('/terminateParking', async (req,res) => {
             entrydate : null,
             exitdate : null,
             vehiclenumber : null
-        });
+        }, {new  : true});
 
         const updatedUser = await User.findOneAndUpdate({_id : userid}, {
             spaceid : null
-        })
+        }, {new  : true})
 
-        res.send(200).json({user})
+        // console.log(updatedUser)
+
+        res.status(200).json({user : updatedUser})
     } catch (error) {
-        res.send(400).json({error: error.message})
+        res.status(400).json({error: error.message})
     }
 })
 

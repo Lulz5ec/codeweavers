@@ -15,34 +15,58 @@ import EditIcon from '@material-ui/icons/Edit';
 import ViewIcon from '@material-ui/icons/Pageview';
 import LogoutIcon from '@material-ui/icons/ExitToApp';
 import UpdateIcon from '@material-ui/icons/EditLocation'
+import AppBar from '@material-ui/core/AppBar'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 
 import currentUserContext from '../Context/useContext';
 
-import Dashboard from './userModes/dashboard';
-import Booking from './userModes/booking';
+import Dashboard from './userModes/dashboard'
+import Booking from './userModes/booking'
 import EditProfile from './userModes/editProfile'
+import UpdateBooking from './userModes/updateBooking'
+import ViewParkingSpace from './userModes/ViewParkingSpace'
+
 import { useHistory } from 'react-router';
 
-const drawerWidth = 260;
+const driverModes = ["Dashboard","Book Parking Slot","Update Parking","View Parking Space","Edit Profile","Logout"]
+const adminModes = ["Dashboard","Book Parking Slot","Update Parking","View Parking Space","Edit Profile","Edit Parking Space","Logout"]
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  body: {
     display: 'flex',
+    flexDirection : 'column',
+    width : "100%"
   },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
+  root: {
+    flexGrow: 1,
+    width: "100%",
+    margin: "auto",
+    textAlign: "center"
   },
-  drawerPaper: {
-    position: "relative",
-    width: drawerWidth,
+  Indicator: {
+      height: 3,
+      boxShadow: 'inset 0 0 6px rgba(0,0,255,.5)',
+      transform: "scale(.8)"
   },
-  drawerContainer: {
-    overflow: 'auto',
+  Tab : {
+    minWidth: "20%", 
+    fontWeight: "400", 
+    fontSize: 16,
+    [theme.breakpoints.down("sm")] : {
+        width: "50%",
+        fontSize: 14
+    },
+    [theme.breakpoints.down("xs")] : {
+        width: "50%",
+        fontSize: 12
+    }
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    [theme.breakpoints.down("sm")] : {
+      width : "100%",
+    }
   }
 }));
 
@@ -53,6 +77,7 @@ const Profile = () => {
   const {user,setUser,setCurrentParking} = useContext(currentUserContext)
   const history = useHistory()
   const classes = useStyles()
+  const [value,setValue] = useState(0)
 
   const Logout = () => {
     console.log("Logged out!!")
@@ -63,10 +88,36 @@ const Profile = () => {
     history.push('/')
   }
 
+  const handleChange = (event,newValue) => {
+    const modes = user.category === "driver" ? driverModes : adminModes
+    if(modes[newValue] === "Logout") {
+      Logout();
+      return;
+    }
+    if(selectedMode !== modes[newValue]) {
+      if(modes[newValue] === "Book Parking Slot") {
+        if(user.spaceid) {
+          alert('You already have booked a spot!')
+          return
+        }
+      }
+
+      if(modes[newValue] === "Update Parking") {
+        if(!user.spaceid) {
+          alert("You haven't booked a parking slot yet")
+          return;
+        }
+      }
+
+      setSelectedMode(modes[newValue]);
+      setValue(newValue)
+    }
+  }
+
 
   return (
-  <div className={classes.root}>
-    <Drawer
+  <div className={classes.body}>
+    {/* <Drawer
       className={classes.drawer}
       variant="permanent"
       classes={{
@@ -97,6 +148,7 @@ const Profile = () => {
           <ListItem button key={'Update Parking'} onClick= {() => {
             if(!user.spaceid) {
               alert("You haven't booked a parking slot yet")
+              return;
             }
             setSelectedMode('Update Parking')
             }}>
@@ -105,7 +157,13 @@ const Profile = () => {
               primary= "Update Parking"
               />
           </ListItem>
-          <ListItem button key={'View Parking Space'} onClick= {() => setSelectedMode('View Parking Space')}>
+          <ListItem button key={'View Parking Space'} onClick= {() => { 
+            if(selectedMode === 'View Parking Space')  {
+              return;
+            }
+            setSelectedMode('View Parking Space')
+            }
+          }>
               <ListItemIcon>  <ViewIcon /> </ListItemIcon>
               <ListItemText 
               primary= "View Parking Space" 
@@ -135,16 +193,89 @@ const Profile = () => {
           </ListItem>
         </List>
       </div>
-    </Drawer>
+    </Drawer> */}
+    <div className = {classes.root}>
+     <AppBar position="static" color="default">
+      <Tabs
+          value={value}
+          onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="on"
+          indicatorColor="none"
+          textColor="primary"
+          classes={{ indicator: classes.Indicator}}
+          aria-label="scrollable article navigation bar"
+      >
+          {/* {pages.map((page,idx) => 
+          <Tab 
+          className={classes.Tab} 
+          label={<span>{page}</span>} 
+          icon={<DashboardIcon />}
+          key={idx}
+          />)} */}
+          <Tab 
+          className={classes.Tab} 
+          label={<span>Dashboard</span>} 
+          icon={<DashboardIcon />}
+          key={"Dashboard"}
+          />
+          <Tab 
+          className={classes.Tab} 
+          label={<span>Book Parking Slot</span>} 
+          icon={<BookIcon />}
+          key={"Book Parking Slot"}
+          />
+          <Tab 
+          className={classes.Tab} 
+          label={<span>Update Booking Parking</span>} 
+          icon={<UpdateIcon />}
+          key={"Update Parking"}
+          />
+          <Tab 
+          className={classes.Tab} 
+          label={<span>View Parking Space</span>} 
+          icon={<ViewIcon />}
+          key={"View Parking Space"}
+          />
+          <Tab 
+          className={classes.Tab} 
+          label={<span>Edit Profile</span>} 
+          icon={<EditIcon />}
+          key={"Edit Profile"}
+          />
+          {user.category === "admin" ? 
+          <Tab 
+          className={classes.Tab} 
+          label={<span>Edit Parking Space</span>} 
+          icon={<EditIcon />}
+          key={"Edit Parking Space"}
+          />: 
+          <></>
+          }
+          <Tab 
+          className={classes.Tab} 
+          label={<span>Logout</span>} 
+          icon={<LogoutIcon />}
+          key={"Logout"}
+          />
+      </Tabs>
+    </AppBar> 
+    </div>
     <main className={classes.content}>
       {
         selectedMode === "Dashboard" ? <Dashboard /> : <></>
       }
       {
-        selectedMode === "Book Parking Spot" ? <Booking changeSelectedMode = {setSelectedMode}/> : <></>
+        selectedMode === "Book Parking Slot" ? <Booking changeSelectedMode = {setSelectedMode}/> : <></>
       }
       {
         selectedMode === "Edit Profile" ? <EditProfile changeSelectedMode = {setSelectedMode} /> : <></>
+      }
+      {
+        selectedMode === "Update Parking" ? <UpdateBooking changeSelectedMode = {setSelectedMode} /> : <></>
+      }
+      {
+        selectedMode === "View Parking Space" ? <ViewParkingSpace changeSelectedMode = {setSelectedMode} /> : <></>
       }
     </main>
   </div>
@@ -154,3 +285,68 @@ const Profile = () => {
 export default Profile
 
 
+{/* <AppBar position="static" color="default">
+  <Tabs
+      value={value}
+      // onChange={handleChange}
+      variant="scrollable"
+      scrollButtons="on"
+      indicatorColor="none"
+      textColor="primary"
+      classes={{ indicator: classes.Indicator}}
+      aria-label="scrollable article navigation bar"
+  >
+      {pages.map((page,idx) => 
+      <Tab 
+      className={classes.Tab} 
+      label={<span>{page}</span>} 
+      icon={<DashboardIcon />}
+      key={idx}
+      />)}
+      <Tab 
+      className={classes.Tab} 
+      label={<span>Dashboard</span>} 
+      icon={<DashboardIcon />}
+      key={idx}
+      />
+      <Tab 
+      className={classes.Tab} 
+      label={<span>Book Parking Slot</span>} 
+      icon={<BookIcon />}
+      key={idx}
+      />
+      <Tab 
+      className={classes.Tab} 
+      label={<span>Update Booking Parking</span>} 
+      icon={<UpdateIcon />}
+      key={idx}
+      />
+      <Tab 
+      className={classes.Tab} 
+      label={<span>View Parking Space</span>} 
+      icon={<ViewIcon />}
+      key={idx}
+      />
+      <Tab 
+      className={classes.Tab} 
+      label={<span>Edit Profile</span>} 
+      icon={<EditIcon />}
+      key={idx}
+      />
+      {user.category === "admin" ? 
+      <Tab 
+      className={classes.Tab} 
+      label={<span>Edit Parking Space</span>} 
+      icon={<EditIcon />}
+      key={idx}
+      />: 
+      <></>
+      }
+      <Tab 
+      className={classes.Tab} 
+      label={<span>Logout</span>} 
+      icon={<LogoutIcon />}
+      key={idx}
+      />
+  </Tabs>
+</AppBar> */}

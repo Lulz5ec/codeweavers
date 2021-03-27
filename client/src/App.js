@@ -65,6 +65,9 @@ function App() {
   }, [])
 
   useEffect(() => {
+    
+    clearInterval(intervalId)
+    setTimeRemaining("")
 
     if(currentParking.status === "active") {
         intervalId = setInterval(() => {
@@ -87,9 +90,6 @@ function App() {
         setTimeRemaining("")
         clearInterval(intervalId)
       }
-    } else {
-      clearInterval(intervalId)
-      setTimeRemaining("")
     }
   }, [currentParking])
   

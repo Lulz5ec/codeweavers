@@ -11,10 +11,10 @@ import currentUserContext from '../Context/useContext'
 
 const useStyles = makeStyles((theme) => ({
     container : {
+        minHeight : "100vh",
         display : "flex",
         alignItems : "center",
-        justifyContent : "center",
-        height : "100vh"
+        justifyContent : "center"
     },
     card : {
        width : 300, 

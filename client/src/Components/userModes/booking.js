@@ -8,7 +8,6 @@ import Button from '@material-ui/core/Button'
 import TextInput from "@material-ui/core/TextField"
 import Grid from "@material-ui/core/Grid";
 import Chip from '@material-ui/core/Chip';
-import MuiAlert from '@material-ui/lab/Alert';
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
@@ -22,7 +21,12 @@ const useStyles = makeStyles((theme) => ({
     display : "flex",
     flexDirection: "column",
     alignItems : "center",
-    justifycontent : "flex-start"
+    justifycontent : "flex-start",
+    paddingTop : "40px",
+    [theme.breakpoints.down("sm")] : {
+      width: "100%",
+      paddingTop : "20px",
+    }
   },
   head : {
     display : "flex",
@@ -30,38 +34,41 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     marginBottom : theme.spacing(5),
     justifyContent : "start",
-    alignItems : "center"
+    alignItems : "center",
+    [theme.breakpoints.down("sm")] : {
+      width: "100%"
+    }
   },
   name : {
     fontFamily: "emoji",
     fontWeight : "300",
-    fontSize : 27
+    fontSize : 27,
+    [theme.breakpoints.down("sm")] : {
+      fontSize : 15
+    }
   },
   submitButton  : {
     margin : 30,
   },
   bookingPanel: {
-    width : "50%",
+    width : "100%",
     display : "flex",
     flexDirection : "column",
     alignItems : "center",
-    "& > *" : {
-      padding : "6px 16px"
+    [theme.breakpoints.down("sm")] : {
+      margin : 0,
+      padding : 0
     }
   },
   inputContainer : {
     marginTop : 20,
-    width : "100%",
+    width : "50%",
     "& > *" : {
         width : "100%",
         marginBottom : 40
     }
   }
 }))
-
-function Alert(props) {
-  return <MuiAlert elevation={1} variant="filled" {...props} />;
-}
 
 
 const Booking = (props) => {

@@ -26,7 +26,12 @@ const useStyles = makeStyles((theme) => ({
         justifyContent : "center",
         alignItems : "center",
         paddingLeft : "25%",
-        paddingRight : "10%"
+        paddingRight : "10%",
+        flexWrap : "wrap",
+        [theme.breakpoints.down("sm")] : {
+            paddingLeft : "20%",
+            paddingRight : "20%"
+        }
     },
     root: {
         maxWidth: 345,
@@ -34,17 +39,41 @@ const useStyles = makeStyles((theme) => ({
         "&:hover" : {
             boxShadow: "inset -.1rem -.15rem 0 .1rem rgba(0,0,0,.2)",
             transform: "translateY(-.1rem) scale(1.02)"
-        }    
+        },
+        [theme.breakpoints.down("sm")] : {
+            width : "100%",
+            margin : 10
+        }
+    },
+    header : {
+        fontWeight : "300",
+        fontSize : 25,
+        fontFamily : "emoji",
+        [theme.breakpoints.down("sm")] : {
+            fontSize : 15
+        }
     },
     media: {
         height: 140,
+        [theme.breakpoints.down("sm")] : {
+            height : 140
+        }
     }, 
+    body : {
+        fontSize : 18,
+        [theme.breakpoints.down("sm")] : {
+            fontSize : 12
+        }
+    },
     btnContainer : {
         width : "30%",
         display : "flex",
         flexDirection : "column",
         justifyContent : "space-between",
-        alignItems : "left"
+        alignItems : "left",
+        [theme.breakpoints.down("md")] : {
+            width : "100%"
+        }
     },
     Button : {
         marginBottom : 20,
@@ -56,6 +85,12 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor : "#306EFF",
             boxShadow: "inset -.1rem -.15rem 0 .1rem rgba(0,0,0,.2)",
             transform: "translateY(-.1rem) scale(1.02)"
+        }, 
+        [theme.breakpoints.down("sm")] : {
+            width : "100%",
+            alignItems : "center",
+            borderRadius : "2px",
+            miWidth : "100px"
         }
     }, 
     toLink : {
@@ -66,7 +101,10 @@ const useStyles = makeStyles((theme) => ({
         fontFamily : "emoji",
         width : "100%",
         height : "100%",
-        textAlign : "center"
+        textAlign : "center",
+        [theme.breakpoints.down("sm")] : {
+            fontSize : "10px"
+        }
     }
 }))
 
@@ -82,10 +120,10 @@ const HomePage = () => {
                     title="Contemplative Reptile"
                     />
                     <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
+                    <Typography className = {classes.header}>
                         ParkInSpace
                     </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
+                    <Typography className = {classes.body}>
                         “ParkInSpace” is a web application that provides automated parking assistance in 
                         the parking space near CC3 building, IIIT ALLAHABAD. 
                     </Typography>

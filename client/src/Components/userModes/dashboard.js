@@ -14,7 +14,11 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor : "#fff",
         minHeight : "80vh",
         margin: 0,
-        padding : 0 
+        paddingTop : "40px",
+        [theme.breakpoints.down("sm")] : {
+            paddingTop : "20px",
+            width:  "100%"
+        }
     },
     head : {
         display : "flex",
@@ -28,26 +32,46 @@ const useStyles = makeStyles((theme) => ({
         height: theme.spacing(14),
         color: '#fff',
         backgroundColor: blueGrey[500],
-        marginBottom : 20
+        marginBottom : 20,
+        fontSize : "120px",
+        [theme.breakpoints.down("sm")] : {
+            width: theme.spacing(9),
+            height: theme.spacing(9)
+        }
     }, name : {
         fontFamily: "emoji",
         fontWeight : "300",
-        fontSize : 27
+        fontSize : 22,
+        [theme.breakpoints.down("sm")] : {
+            fontSize : 12
+        }
     }, driverBody : {
         display : "flex",
         flexWrap : "wrap",
         justifyContent : "center",
         alignItems : "center",
         width : "100%",
-        marginTop : 150
+        marginTop : 90
     }, card: {
-        width : 300,
+        width : 350,
         padding : 20,
+        [theme.breakpoints.down("sm")] : {
+            padding : 0,
+            width : "80%"
+        }
     }, cardHeader : {
-        marginBottom: 16
+        marginBottom: 16,
+        fontSize : 20,
+        [theme.breakpoints.down("sm")] : {
+            fontSize : 12
+        }
     },
     pos: {
-        marginBottom: 12
+        marginBottom: 10,
+        fontSize : 15,
+        [theme.breakpoints.down("sm")] : {
+            fontSize : 10
+        }
     }
 }));
 
@@ -70,14 +94,14 @@ const Dashboard = () => {
             <div className = {classes.driverBody}> 
                 <Card className={classes.card} variant="outlined">
                     <CardContent>
-                        <Typography variant="h5" component="h3" color="textPrimary" className = {classes.cardHeader}>
+                        <Typography color="textPrimary" className = {classes.cardHeader}>
                             Your Parking
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
                             Parking SpaceId : {user.spaceid ? user.spaceid : "N.R"}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
-                            vehicle Number : {currentParking.vehiclenumber ? currentParking.vehiclenumber : "N.R"}
+                            Vehicle Number : {currentParking.vehiclenumber ? currentParking.vehiclenumber : "N.R"}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
                             Parking Status : {currentParking.status ? currentParking.status : "N.R"}

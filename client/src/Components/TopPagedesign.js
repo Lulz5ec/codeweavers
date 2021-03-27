@@ -10,18 +10,30 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor : "#1976d2",
         display : "flex",
         justifyContent : "left",
-        alignItems : "Center"
+        alignItems : "Center",
+        [theme.breakpoints.down("sm")] : {
+            minHeight : "7vh"
+        }
     }, 
     parkingIcon : {
         fontSize : "45px",
         paddingLeft : "1.4rem",
-        paddingRight : "0.9rem"
+        paddingRight : "0.9rem",
+        [theme.breakpoints.down("sm")] : {
+            fontSize : "30px",
+            paddingLeft : "0.9rem",
+            paddingRight : "0.7rem",
+        }
     }, 
     heading : {
         fontSize : "35px",
         color : "#fff",
         fontWeight : "400",
-        fontFamily : "ui-monospace"
+        fontFamily : "ui-monospace",
+        [theme.breakpoints.down("sm")] : {
+            fontSize : "25px",
+            fontWeight : 300
+        }
     }
 }))
 

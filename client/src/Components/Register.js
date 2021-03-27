@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
         display : "flex",
         alignItems : "center",
         justifyContent : "center",
-        height : "100vh"
+        minHeight : "100vh"
     },
     card : {
        width : 600, 
