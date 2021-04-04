@@ -22,10 +22,10 @@ app.use('/register', registerRoutes);
 app.use('/login', loginRoutes);
 app.use('/user', userRoutes);
 app.use('/parkingSpace', parkingSpaceRoutes);
-app.use('/configRoutes', configRoutes);
+app.use('/config', configRoutes);
 
 
-const connectionUrl = 'mongodb+srv://padityak79:pc10thebest@cluster0.8ypgq.mongodb.net/ParkINSpace?retryWrites=true&w=majority';
+const connectionUrl = 'mongodb://127.0.0.1:27017/parkinspace';
 
 const PORT = process.env.PORT || 5000;
 

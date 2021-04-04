@@ -6,16 +6,9 @@ const ParkingSpace = require('../models/parkingSpace.js');
 
 router.post('/', async (req, res) => {
 
-    ParkingSpace.deleteMany({}).then(function(){ 
-        console.log("Data deleted") 
-        // Success 
-    }).catch(function(error){
-        throw new Error('error while deleting data') 
-        // Failure 
-    });
-
     const { row, column} = req.body
     let code
+    console.log('haha',row,column)
     try {
         if(validator.isEmpty(row) || row < 1) {
             code = 0
@@ -27,9 +20,17 @@ router.post('/', async (req, res) => {
             throw new Error('column feild is mandatory and should be greate than 0')
         }
 
+        ParkingSpace.deleteMany({}).then(function(){ 
+            console.log("Data deleted") 
+            // Success 
+        }).catch(function(error){
+            throw new Error('error while deleting data') 
+            // Failure 
+        });
+
         for(var i=1; i<=row; i++){
             for(var j=1; j<=column; j++){
-                var temp = 'space_' + i + '-' + j ;
+                var temp = 'space_' + i + '_' + j ;
                 const tempparkingspace = new ParkingSpace({
                     spaceid : temp
                 });

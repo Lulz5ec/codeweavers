@@ -69,15 +69,18 @@ const useStyles = makeStyles((theme) => ({
         color : "#fff"
     }, tableRow : {
         height : "40px",
-        fontSize : 18,
-        margin : 3
+        fontSize : 15,
+        margin : 3,
+        [theme.breakpoints.down("sm")] : {
+            fontSize : 8
+        }
     },root: {
         flexGrow: 1,
         marginTop : 20,
-        maxWidth : "40%",
+        minWidth : "20%",
         minHeight : 400,
         [theme.breakpoints.down("xs")] : {
-            maxWidth : "100%",
+            minWidth : "80%",
         }
     },
     paperFilled: {
@@ -92,32 +95,32 @@ const useStyles = makeStyles((theme) => ({
         color: "#fff",
         background : "linear-gradient(45deg, #ff7961 20%, #ba000d 70%)",
     },
-    cardHead : {
-        paddingLeft : 20,
-        fontSize : 15,
-        fontWeight : 400,
-        textTransform : "uppercase",
-        [theme.breakpoints.down("xs")] : {
-            paddingLeft : 10,
-            fontSize : 12,
-            fontWeight : 300,
-        }
-    },
-    cardBody : {
-        paddingLeft : 20,
-        paddingTop : 10,
-        [theme.breakpoints.down("xs")] : {
-            paddingLeft : 8,
-        }
-    }, 
-    cardInfo : {
-        fontSize : 12,
-        fontWeight : 300,
-        [theme.breakpoints.down("xs")] : {
-            fontSize : 8,
-            fontWeight : 200
-        }
-    }
+    // cardHead : {
+    //     paddingLeft : 20,
+    //     fontSize : 15,
+    //     fontWeight : 400,
+    //     textTransform : "uppercase",
+    //     [theme.breakpoints.down("xs")] : {
+    //         paddingLeft : 10,
+    //         fontSize : 12,
+    //         fontWeight : 300,
+    //     }
+    // },
+    // cardBody : {
+    //     paddingLeft : 20,
+    //     paddingTop : 10,
+    //     [theme.breakpoints.down("xs")] : {
+    //         paddingLeft : 8,
+    //     }
+    // }, 
+    // cardInfo : {
+    //     fontSize : 12,
+    //     fontWeight : 300,
+    //     [theme.breakpoints.down("xs")] : {
+    //         fontSize : 8,
+    //         fontWeight : 200
+    //     }
+    // }
     
 }));
 
@@ -218,9 +221,9 @@ const ViewParkingSpace = () => {
                 <div className={classes.root}>
                     <Grid container spacing={3}>
                         {parkingSpaces.map((parkingSpace) => 
-                        <Grid item xs={12/dimensions.rows}>
+                        <Grid item xs={12/dimensions.columns}>
                         <Paper className={parkingSpace.userid ? classes.paperFilled : classes.paperEmpty}>
-                            <Typography className = {classes.cardHead}>
+                            {/* <Typography className = {classes.cardHead}>
                                 Space Id : {parkingSpace.spaceid.split("space_")[1]}
                             </Typography>
                             <div className = {classes.cardBody}>
@@ -230,7 +233,7 @@ const ViewParkingSpace = () => {
                                 <Typography className = {classes.cardInfo}>
                                     Exit Time : {parkingSpace.exitdate ? `${new Date(parkingSpace.exitdate).getHours()}:${new Date(parkingSpace.exitdate).getMinutes()}` : "N.R"}
                                 </Typography>
-                            </div>
+                            </div> */}
                         </Paper>
                         </Grid>)
                         }

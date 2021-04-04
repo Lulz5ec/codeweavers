@@ -26,6 +26,7 @@ import Booking from './userModes/booking'
 import EditProfile from './userModes/editProfile'
 import UpdateBooking from './userModes/updateBooking'
 import ViewParkingSpace from './userModes/ViewParkingSpace'
+import EditParkSpace from './adminModes/editParkingSpace'
 
 import { useHistory } from 'react-router';
 
@@ -78,7 +79,7 @@ const Profile = () => {
   const history = useHistory()
   const classes = useStyles()
   const [value,setValue] = useState(0)
-
+  // console.log(user);
   const Logout = () => {
     console.log("Logged out!!")
     setUser({});
@@ -243,7 +244,7 @@ const Profile = () => {
           icon={<EditIcon />}
           key={"Edit Profile"}
           />
-          {user.category === "admin" ? 
+          {user.category === "Admin" ? 
           <Tab 
           className={classes.Tab} 
           label={<span>Edit Parking Space</span>} 
@@ -276,6 +277,9 @@ const Profile = () => {
       }
       {
         selectedMode === "View Parking Space" ? <ViewParkingSpace changeSelectedMode = {setSelectedMode} /> : <></>
+      }
+      {
+        selectedMode === "Edit Parking Space" ? <EditParkSpace changeSelectedMode = {setSelectedMode} /> : <></>
       }
     </main>
   </div>
