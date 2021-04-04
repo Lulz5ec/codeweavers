@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const EditParkSpace = (props) => {
-  const {changeSelectedMode} = props
+  const {changeSelectedMode,changeIndicatortab} = props
   const classes = useStyles();
   const {user,setUser} = useContext(currentUserContext)
   const [err, setErr] = useState({});
@@ -103,6 +103,7 @@ const EditParkSpace = (props) => {
         if(message=="success") {
           alert('Parking Space has been updated!')
           changeSelectedMode('Dashboard')
+          changeIndicatortab(0)
         } 
         else {
           handleError(response.data);

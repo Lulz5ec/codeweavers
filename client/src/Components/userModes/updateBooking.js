@@ -53,7 +53,7 @@ const UpdateBooking = (props) => {
   // The first commit of Material-UI
   const classes = useStyles()
   const {user,setUser,currentParking,setCurrentParking} = useContext(currentUserContext)
-  const {changeSelectedMode} = props
+  const {changeSelectedMode,changeIndicatortab} = props
 
   const [err,setErr] = useState("")
   const [availableParkingSlotId, setAvailableParkingSlotId] = useState("") 
@@ -89,6 +89,7 @@ const UpdateBooking = (props) => {
       setCurrentParking({})
       alert('Booking Terminated Updated!!')
       changeSelectedMode('Dashboard')
+      changeIndicatortab(0);
     } catch (error) {
       console.log(error)
     }
@@ -118,6 +119,7 @@ const UpdateBooking = (props) => {
       }
       alert('Booking Successfully Updated!!')
       changeSelectedMode('Dashboard')
+      changeIndicatortab(0)
     } catch (error) {
       console.log(error)
     }

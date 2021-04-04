@@ -32,7 +32,8 @@ router.post('/', async (req, res) => {
             for(var j=1; j<=column; j++){
                 var temp = 'space_' + i + '_' + j ;
                 const tempparkingspace = new ParkingSpace({
-                    spaceid : temp
+                    spaceid : temp,
+                    status : false
                 });
 
                 await tempparkingspace.save();

@@ -75,7 +75,7 @@ const Booking = (props) => {
   // The first commit of Material-UI
   const classes = useStyles()
   const {user,setUser,currentParking,setCurrentParking} = useContext(currentUserContext)
-  const {changeSelectedMode} = props
+  const {changeSelectedMode,changeIndicatortab} = props
 
   const [err,setErr] = useState("")
   const [availableParkingSlotId, setAvailableParkingSlotId] = useState("") 
@@ -161,6 +161,7 @@ const Booking = (props) => {
       }
       alert('Booking Successful!!')
       changeSelectedMode('Dashboard')
+      changeIndicatortab(0)
     } catch (error) {
       console.log(error)
     }

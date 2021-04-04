@@ -267,19 +267,19 @@ const Profile = () => {
         selectedMode === "Dashboard" ? <Dashboard /> : <></>
       }
       {
-        selectedMode === "Book Parking Slot" ? <Booking changeSelectedMode = {setSelectedMode}/> : <></>
+        selectedMode === "Book Parking Slot" ? <Booking changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue}/> : <></>
       }
       {
-        selectedMode === "Edit Profile" ? <EditProfile changeSelectedMode = {setSelectedMode} /> : <></>
+        selectedMode === "Edit Profile" ? <EditProfile changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
       }
       {
-        selectedMode === "Update Parking" ? <UpdateBooking changeSelectedMode = {setSelectedMode} /> : <></>
+        selectedMode === "Update Parking" ? <UpdateBooking changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
       }
       {
-        selectedMode === "View Parking Space" ? <ViewParkingSpace changeSelectedMode = {setSelectedMode} /> : <></>
+        selectedMode === "View Parking Space" ? <ViewParkingSpace changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
       }
       {
-        selectedMode === "Edit Parking Space" ? <EditParkSpace changeSelectedMode = {setSelectedMode} /> : <></>
+        selectedMode === "Edit Parking Space" ? <EditParkSpace changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
       }
     </main>
   </div>

@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const EditProfile = (props) => {
-  const {changeSelectedMode} = props
+  const {changeSelectedMode,changeIndicatortab} = props
   const classes = useStyles();
   const {user,setUser} = useContext(currentUserContext)
   const [err, setErr] = useState({});
@@ -122,6 +122,7 @@ const EditProfile = (props) => {
           localStorage.setItem('user', JSON.stringify(updatedUser));
           alert('Your profile has been updated!')
           changeSelectedMode('Dashboard')
+          changeIndicatortab(0);
         } 
         else {
           handleError(response.data);
