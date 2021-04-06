@@ -3,6 +3,7 @@ const validator = require('validator');
 const router = express.Router();
 
 const ParkingSpace = require('../models/parkingSpace.js');
+const User = require('../models/user.js');
 
 router.post('/', async (req, res) => {
 
@@ -19,6 +20,15 @@ router.post('/', async (req, res) => {
             code = 1
             throw new Error('column feild is mandatory and should be greate than 0')
         }
+
+        await User.find()
+        .then((users) => {
+            users.forEach(user => {
+                user.spaceid = null;
+                console.log("dele");
+                user.save();
+            })
+        })
 
         ParkingSpace.deleteMany({}).then(function(){ 
             console.log("Data deleted") 
