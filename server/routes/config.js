@@ -1,14 +1,14 @@
 const express = require('express');
 const validator = require('validator');
 const router = express.Router();
-
 const ParkingSpace = require('../models/parkingSpace.js');
+const User = require('../models/user.js')
 
 router.post('/', async (req, res) => {
 
-    const { row, column} = req.body
-    let code
-    console.log('haha',row,column)
+    const { userID,row, column} = req.body
+    let code,users=[]
+    
     try {
         if(validator.isEmpty(row) || row < 1) {
             code = 0
@@ -20,6 +20,28 @@ router.post('/', async (req, res) => {
             throw new Error('column feild is mandatory and should be greate than 0')
         }
 
+        
+        try {
+            await User.find({}, async (err, usersList) => {
+                if(err) {
+                    throw new Error('failed to load data and to send')
+                } else {
+                    console.log(usersList)
+                    users=usersList
+                }
+            })
+        } catch {
+            if(error.message) {
+                console.log(error.message)
+            }
+        }
+        console.log(users.length)
+        for(var i=0;i<users.length;i++){
+            const updatedUser = await User.findOneAndUpdate({_id : users[i]._id}, {
+                spaceid : null
+            }, {new  : true})
+            console.log('removed vehicle')
+        }
         ParkingSpace.deleteMany({}).then(function(){ 
             console.log("Data deleted") 
             // Success 
@@ -32,15 +54,20 @@ router.post('/', async (req, res) => {
             for(var j=1; j<=column; j++){
                 var temp = 'space_' + i + '_' + j ;
                 const tempparkingspace = new ParkingSpace({
-                    spaceid : temp,
-                    status : false
+                    spaceid : temp
                 });
 
                 await tempparkingspace.save();
             }
         }
 
-        res.status(200).send('success');
+        try {
+            const newUser = await User.findOne({_id: userID}).exec();
+            if(newUser) res.status(200).json({user: newUser});
+            throw new Error('user not found');
+        } catch (error) {
+            res.status(400).json({error : error.message});
+        }
     } catch (error) {
         if(error.message) {
             res.status(200).send({code : code, error : error.message});

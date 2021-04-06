@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
 const EditParkSpace = (props) => {
   const {changeSelectedMode,changeIndicatortab} = props
   const classes = useStyles();
-  const {user,setUser} = useContext(currentUserContext)
+  const {user,setUser,currentParking, setCurrentParking} = useContext(currentUserContext)
   const [err, setErr] = useState({});
   const [rowValue,setRowValue] = useState()
   const [colValue,setColValue] = useState()
@@ -89,26 +89,42 @@ const EditParkSpace = (props) => {
     setErr(newerr)
   }
 
+  const setNewUser = (newUser) => {
+    setUser(newUser);
+  }
+
   const handleClick = async (e) => {
       setErr({})
       console.log(rowValue,colValue)
       try {
         const url = `http://localhost:5000/config`
         const response = await axios.post(url, {
+          userID: user._id,
           row : rowValue,
           column : colValue,
         })
         console.log(response)
-        const message= response.data;
-        if(message=="success") {
-          alert('Parking Space has been updated!')
+        const updatedUser=response.data.user;
+        console.log('Updated user',updatedUser)
+        // if(newUser) {
+        //   setNewUser(newUser)
+        //   alert('Parking Space has been updated!')          
+        //   changeSelectedMode('Dashboard')
+        //   changeIndicatortab(0)
+        // } 
+        // else {
+        //   handleError(response.data);
+        // }
+        // console.log(response)
+        if(updatedUser) {
+          setNewUser(updatedUser);
+          setCurrentParking({})
+          alert('Parking Space updated!')
           changeSelectedMode('Dashboard')
-          changeIndicatortab(0)
-        } 
-        else {
+          changeIndicatortab(0);
+        } else {
           handleError(response.data);
         }
-        // console.log(response)
 
       } catch (error) {
         console.log(error)
