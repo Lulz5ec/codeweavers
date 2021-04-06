@@ -1,6 +1,7 @@
 const express = require('express');
 const validator = require('validator');
 const router = express.Router();
+
 const ParkingSpace = require('../models/parkingSpace.js');
 const User = require('../models/user.js')
 
@@ -21,27 +22,15 @@ router.post('/', async (req, res) => {
         }
 
         
-        try {
-            await User.find({}, async (err, usersList) => {
-                if(err) {
-                    throw new Error('failed to load data and to send')
-                } else {
-                    console.log(usersList)
-                    users=usersList
-                }
+        await User.find()
+        .then((users) => {
+            users.forEach(user => {
+                user.spaceid = null;
+                console.log("dele");
+                user.save();
             })
-        } catch {
-            if(error.message) {
-                console.log(error.message)
-            }
-        }
-        console.log(users.length)
-        for(var i=0;i<users.length;i++){
-            const updatedUser = await User.findOneAndUpdate({_id : users[i]._id}, {
-                spaceid : null
-            }, {new  : true})
-            console.log('removed vehicle')
-        }
+        })
+
         ParkingSpace.deleteMany({}).then(function(){ 
             console.log("Data deleted") 
             // Success 
