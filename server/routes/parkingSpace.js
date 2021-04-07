@@ -121,9 +121,9 @@ router.put('/updateParking', async (req,res) => {
         const updatedParkingSpace = await ParkingSpace.findOneAndUpdate({spaceid : spaceid}, {
             exitdate : exitdate
         },{new  : true});
-        res.status(200)
+        res.status(200).send({message : "success"})
     } catch (error) {
-        res.send(400).json({error: error.message})
+        res.status(400).json({error: error.message})
     }
 })
 

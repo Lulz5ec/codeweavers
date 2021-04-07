@@ -86,6 +86,7 @@ const UpdateBooking = (props) => {
       const updatedUser = response.data.user
     //   console.log(response)
       setUser(updatedUser)
+      localStorage.setItem('user',JSON.stringify(updatedUser))
       setCurrentParking({})
       alert('Booking Terminated Updated!!')
       changeSelectedMode('Dashboard')

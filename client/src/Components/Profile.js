@@ -27,11 +27,13 @@ import EditProfile from './userModes/editProfile'
 import UpdateBooking from './userModes/updateBooking'
 import ViewParkingSpace from './userModes/ViewParkingSpace'
 import EditParkSpace from './adminModes/editParkingSpace'
+import ViewAllUsers from './adminModes/viewAllUsers'
+
 
 import { useHistory } from 'react-router';
 
 const driverModes = ["Dashboard","Book Parking Slot","Update Parking","View Parking Space","Edit Profile","Logout"]
-const adminModes = ["Dashboard","Book Parking Slot","Update Parking","View Parking Space","Edit Profile","Edit Parking Space","Logout"]
+const adminModes = ["Dashboard","Book Parking Slot","Update Parking","View Parking Space","View All Users","Edit Profile","Edit Parking Space","Logout"]
 
 const useStyles = makeStyles((theme) => ({
   body: {
@@ -238,6 +240,15 @@ const Profile = () => {
           icon={<ViewIcon />}
           key={"View Parking Space"}
           />
+          {user.category === "Admin" ? 
+          <Tab 
+          className={classes.Tab} 
+          label={<span>View All Users</span>} 
+          icon={<ViewIcon />}
+          key={"View All Users"}
+          />: 
+          <></>
+          }
           <Tab 
           className={classes.Tab} 
           label={<span>Edit Profile</span>} 
@@ -253,6 +264,7 @@ const Profile = () => {
           />: 
           <></>
           }
+          
           <Tab 
           className={classes.Tab} 
           label={<span>Logout</span>} 
@@ -280,6 +292,9 @@ const Profile = () => {
       }
       {
         selectedMode === "Edit Parking Space" ? <EditParkSpace changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
+      }
+      {
+        selectedMode === "View All Users" ? <ViewAllUsers changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
       }
     </main>
   </div>

@@ -69,23 +69,22 @@ router.put('/updateUserProfile', async (req,res) => {
     }
 })
 
-// router.get('/getAll', async (req,res) => {
-//     // res.send("Register Screen for Parking space to Admin only!")
-//     try {
-//         await User.find({}, async (err, users) => {
-//             if(err) {
-//                 throw new Error('failed to load data and to send')
-//             } else {
-//                 res.status(200).json({users : users})
-//             }
-//         })
-//     } catch {
-//         if(error.message) {
-//             res.status(200).json({error : error.message});
-//         } else {
-//             res.status(400).json(error);
-//         }
-//     }
-// })
+router.get('/getAll', async (req,res) => {
+    try {
+        await User.find({}, async (err, users) => {
+            if(err) {
+                throw new Error('failed to load data and to send')
+            } else {
+                res.status(200).json({users : users})
+            }
+        })
+    } catch {
+        if(error.message) {
+            res.status(200).json({error : error.message});
+        } else {
+            res.status(400).json(error);
+        }
+    }
+})
 
 module.exports = router;

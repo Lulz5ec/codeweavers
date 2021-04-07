@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
 const EditParkSpace = (props) => {
   const {changeSelectedMode,changeIndicatortab} = props
   const classes = useStyles();
-  const {user,setUser,currentParking, setCurrentParking} = useContext(currentUserContext)
+  const {user,setUser,currentParking,setCurrentParking} = useContext(currentUserContext)
   const [err, setErr] = useState({});
   const [rowValue,setRowValue] = useState()
   const [colValue,setColValue] = useState()
