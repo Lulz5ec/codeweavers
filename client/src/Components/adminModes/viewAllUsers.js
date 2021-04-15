@@ -206,7 +206,7 @@ const ViewAllUsers = () => {
                             <Tr className = {classes.tableRow}>
                             <Td>    {user.name}  </Td>
                             <Td>     {user.category}   </Td>
-                            <Td>    {user.spaceid ? "Active" : "N.R"}   </Td>
+                            <Td>    {user.spaceid ? "Parked" : "N.R"}   </Td>
                             </Tr>
                     ))}
                 </Tbody>

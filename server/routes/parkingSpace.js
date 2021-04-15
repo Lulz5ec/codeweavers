@@ -15,12 +15,29 @@ router.get('/getAll', async (req,res) => {
                 res.status(200).json({parkingspaces : parkingSpaces})
             }
         })
-    } catch {
+    } catch(error) {
         if(error.message) {
             res.status(200).json({error : error.message});
         } else {
             res.status(400).json(error);
         }
+    }
+})
+
+router.get('/getDimensions', async (req,res) => {
+    try {
+        const parkingSpaces = await ParkingSpace.find({}).exec()
+        if(!parkingSpaces.length) {
+            throw new Error('failed to load data')
+        } else {
+            const lastId = parkingSpaces[parkingSpaces.length - 1].spaceid.split('_')
+            res.status(200).json({row : lastId[1], column : lastId[2]})
+        }
+
+    } catch(error) {
+        
+            res.status(400).json({error : error.message});
+        
     }
 })
 
@@ -31,10 +48,10 @@ router.get('/getOne', async (req,res) => {
             if(err) {
                 throw new Error('failed to load data and to send for specific spaceid')
             } else {
-                res.json({space})
+                res.status(200).json({space})
             }
         })
-    } catch {
+    } catch(error) {
         if(error.message) {
             res.status(200).json({code : code, error : error.message});
         } else {

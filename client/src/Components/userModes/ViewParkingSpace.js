@@ -1,4 +1,6 @@
 import React,{useContext, useEffect, useState} from 'react';
+import currentUserContext from "../../Context/useContext"
+
 import { makeStyles } from '@material-ui/core/styles';
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
@@ -90,6 +92,12 @@ const useStyles = makeStyles((theme) => ({
         color: "#fff",
         background : "linear-gradient(45deg, #2196F3 20%, #21CBF3 70%)",
     },
+    paperAlloted : {
+        padding: theme.spacing(1),
+        textAlign: 'left',
+        color: "#fff",
+        background: "linear-gradient(45deg, #c2e59c 40%, #7CFC00 60%)"
+    },
     paperEmpty: {
         padding: theme.spacing(1),
         textAlign: 'left',
@@ -129,6 +137,7 @@ const ViewParkingSpace = () => {
     const classes = useStyles();
     const [parkingSpaces, setParkingSpaces] = useState([])
     const [value, setValue] = useState(0)
+    const {user} = useContext(currentUserContext)
 
     useEffect (() => {
         const getAllSPaces = async () => { 
@@ -239,7 +248,7 @@ const ViewParkingSpace = () => {
                     <Grid container spacing={3}>
                         {parkingSpaces.map((parkingSpace) => 
                         <Grid item xs={12/dimensions.columns}>
-                        <Paper className={parkingSpace.userid ? classes.paperFilled : classes.paperEmpty}>
+                        <Paper className={parkingSpace.userid ? ((user.spaceid === parkingSpace.spaceid) ? classes.paperAlloted : classes.paperFilled) : classes.paperEmpty}>
                             {/* <Typography className = {classes.cardHead}>
                                 Space Id : {parkingSpace.spaceid.split("space_")[1]}
                             </Typography>
