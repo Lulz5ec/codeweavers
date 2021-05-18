@@ -12,7 +12,7 @@ import currentUserContext from '../../Context/useContext';
 const useStyles = makeStyles((theme) => ({
     root : {
         backgroundColor : "#fff",
-        minHeight : "80vh",
+        minHeight : "75vh",
         margin: 0,
         paddingTop : "40px",
         [theme.breakpoints.down("sm")] : {
@@ -72,6 +72,10 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.down("sm")] : {
             fontSize : 10
         }
+    },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
     }
 }));
 

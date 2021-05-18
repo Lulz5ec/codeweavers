@@ -13,6 +13,9 @@ import {
 } from "@material-ui/pickers";
 import { makeStyles } from '@material-ui/core/styles'; 
 
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 const useStyles = makeStyles((theme) => ({
   root : {
     display : "flex",
@@ -27,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     display : "flex",
     flexDirection : "column",
     margin: theme.spacing(1),
+    marginTop : theme.spacing(5),
     marginBottom : theme.spacing(5),
     justifyContent : "start",
     alignItems : "center",
@@ -45,6 +49,10 @@ const useStyles = makeStyles((theme) => ({
   submitButton  : {
     margin : 30,
     minWidth : 130
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
   }
 }))
 
@@ -54,11 +62,8 @@ const UpdateBooking = (props) => {
   const classes = useStyles()
   const {user,setUser,currentParking,setCurrentParking} = useContext(currentUserContext)
   const {changeSelectedMode,changeIndicatortab} = props
-
+  const [open, setOpen] = useState(false)
   const [err,setErr] = useState("")
-  const [availableParkingSlotId, setAvailableParkingSlotId] = useState("") 
-  const [vehicleNumber,setVehicleNumber] = useState("");
-  const [searchStatus, setSearchStatus] = useState(false)
   const [selectedTime, setSelectedTime] = React.useState(
     currentParking.exitdate
   );  
@@ -75,12 +80,13 @@ const UpdateBooking = (props) => {
 
 
   const terminateBooking = async () => {
-
+    setOpen(true);
     try {
       let URL = 'http://localhost:5000/parkingSpace/terminateParking'
       const response = await axios.put(URL, {
         spaceid : user.spaceid,
-        userid : user._id
+        userid : user._id,
+        name : user.name
       });
 
       const updatedUser = response.data.user
@@ -88,16 +94,18 @@ const UpdateBooking = (props) => {
       setUser(updatedUser)
       localStorage.setItem('user',JSON.stringify(updatedUser))
       setCurrentParking({})
+      setOpen(false);
       alert('Booking Terminated Updated!!')
       changeSelectedMode('Dashboard')
       changeIndicatortab(0);
     } catch (error) {
+      setOpen(false);
       console.log(error)
     }
   }
 
   const handleBooking = async () => {
-
+    setOpen(true)
     try {
       let URL = 'http://localhost:5000/parkingSpace/updateParking'
       const response = await axios.put(URL, {
@@ -118,10 +126,12 @@ const UpdateBooking = (props) => {
       if(parkingResponse) {
         setCurrentParking(parkingResponse.data)
       }
+      setOpen(false)
       alert('Booking Successfully Updated!!')
       changeSelectedMode('Dashboard')
       changeIndicatortab(0)
     } catch (error) {
+      setOpen(false)
       console.log(error)
     }
   }
@@ -151,6 +161,9 @@ const UpdateBooking = (props) => {
       <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleBooking}>UPDATE PARKING</Button>   
       <Button className={classes.submitButton} variant="contained" color="primary" onClick = {terminateBooking}>TERMINATE PARKING</Button>   
 
+      <Backdrop className={classes.backdrop} open={open}>
+          <CircularProgress color="primary" />
+      </Backdrop>
     </div>
   );
 }

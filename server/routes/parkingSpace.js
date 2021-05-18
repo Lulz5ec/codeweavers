@@ -4,6 +4,7 @@ const validator = require('validator');
 const router = express.Router();
 const ParkingSpace = require('../models/parkingSpace.js');
 const User = require('../models/user.js');
+const ParkingRecord = require('../models/parkingRecord.js') 
 
 router.get('/getAll', async (req,res) => {
     // res.send("Register Screen for Parking space to Admin only!")
@@ -145,8 +146,21 @@ router.put('/updateParking', async (req,res) => {
 })
 
 router.put('/terminateParking', async (req,res) => {
-    const {spaceid, userid} = req.body
+    const {spaceid, userid, name} = req.body
     try {
+
+        const refferedParking = await ParkingSpace.findOne({spaceid : spaceid}).exec()
+
+        const record = new ParkingRecord({
+            spaceid : spaceid,
+            name : name,
+            entrydate : refferedParking.entrydate,
+            exitdate : refferedParking.exitdate,
+            vehiclenumber : refferedParking.vehiclenumber 
+        })
+
+        await record.save()
+
         const cancelledParkingSpace = await ParkingSpace.findOneAndUpdate({spaceid : spaceid}, {
             status : false,
             userid : null,

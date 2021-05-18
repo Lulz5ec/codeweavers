@@ -22,14 +22,11 @@ router.post('/', async (req, res) => {
         }
 
         
-        await User.find()
-        .then((users) => {
-            users.forEach(user => {
-                user.spaceid = null;
-                console.log("dele");
-                user.save();
-            })
-        })
+        await User.updateMany({},
+            {
+                spaceid : null
+            }
+        )
 
         ParkingSpace.deleteMany({}).then(function(){ 
             console.log("Data deleted") 
@@ -41,27 +38,32 @@ router.post('/', async (req, res) => {
 
         for(var i=1; i<=row; i++){
             for(var j=1; j<=column; j++){
-                var temp = 'space_' + i + '_' + j ;
-                const tempparkingspace = new ParkingSpace({
-                    spaceid : temp
-                });
 
-                await tempparkingspace.save();
+                const saveParkingSpace = async (spaceId) => {
+                    const parkingSpace = new ParkingSpace({
+                        spaceid : spaceId
+                    })
+                    await parkingSpace.save()
+                }
+
+                const spaceId = 'space_' + i + '_' + j;
+
+                await saveParkingSpace(spaceId)
             }
         }
 
         try {
             const newUser = await User.findOne({_id: userID}).exec();
             if(newUser) res.status(200).json({user: newUser});
-            throw new Error('user not found');
+            else throw new Error('user not found');
         } catch (error) {
             res.status(400).json({error : error.message});
         }
     } catch (error) {
         if(error.message) {
-            res.status(200).send({code : code, error : error.message});
+            res.status(200).json({code : code, error : error.message});
         } else {
-            res.status(400).send(error);
+            res.status(400).json(error);
         }
     }
 

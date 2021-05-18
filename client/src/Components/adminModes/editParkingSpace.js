@@ -5,6 +5,8 @@ import TextInput from "@material-ui/core/TextField";
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import axios from 'axios'
 import currentUserContext from '../../Context/useContext'
@@ -64,6 +66,10 @@ const useStyles = makeStyles((theme) => ({
     },
     submitButton  : {
         marginTop : 30
+    },
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: '#fff',
     }
 }));
 
@@ -74,6 +80,7 @@ const EditParkSpace = (props) => {
   const [err, setErr] = useState({});
   const [rowValue,setRowValue] = useState()
   const [colValue,setColValue] = useState()
+  const [open, setOpen] = useState(false)
 
   const changeRowValue = (e) => {
     const {value} = e.target;
@@ -95,6 +102,7 @@ const EditParkSpace = (props) => {
 
   const handleClick = async (e) => {
       setErr({})
+      setOpen(true);
       console.log(rowValue,colValue)
       try {
         const url = `http://localhost:5000/config`
@@ -106,27 +114,20 @@ const EditParkSpace = (props) => {
         console.log(response)
         const updatedUser=response.data.user;
         console.log('Updated user',updatedUser)
-        // if(newUser) {
-        //   setNewUser(newUser)
-        //   alert('Parking Space has been updated!')          
-        //   changeSelectedMode('Dashboard')
-        //   changeIndicatortab(0)
-        // } 
-        // else {
-        //   handleError(response.data);
-        // }
-        // console.log(response)
         if(updatedUser) {
           setNewUser(updatedUser);
           setCurrentParking({})
+          setOpen(false)
           alert('Parking Space updated!')
           changeSelectedMode('Dashboard')
           changeIndicatortab(0);
         } else {
+          setOpen(false)
           handleError(response.data);
         }
 
       } catch (error) {
+        setOpen(false)
         console.log(error)
       }
 
@@ -161,6 +162,9 @@ const EditParkSpace = (props) => {
         </div>
         <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleClick}>Confirm Update</Button>   
         </Card>
+        <Backdrop className={classes.backdrop} open={open}>
+          <CircularProgress color="primary" />
+        </Backdrop>
     </Container>
   );
 }

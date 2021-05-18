@@ -11,6 +11,7 @@ import Profile from './Components/Profile'
 import React, { useState  , useEffect } from 'react'
 import axios from "axios"
 
+
 let intervalId
 
 function App() {
@@ -18,11 +19,13 @@ function App() {
   const [user, setUser] = useState({})
   const [currentParking, setCurrentParking] = useState({})
   const [timeRemaining, setTimeRemaining] = useState()
+  const [open, setOpen] = useState(false)
   const history = useHistory()
 
   useEffect(() => {
     if(window.location.pathname === "/" || window.location.pathname === "/register" || window.location.pathname === "/login") return;
     console.log("APP.js useEffect is running-----");
+    setOpen(true)
     const previousUserJson = localStorage.getItem('user');
     const previousUser = JSON.parse(previousUserJson);
     if(previousUser) {
@@ -47,12 +50,15 @@ function App() {
             })
           }
           
+          setOpen(false)
+
           history.push(`${window.location.pathname}`)
           setUser(previousUser);
           if(parkingResponse) {
             setCurrentParking(parkingResponse.data)
           }
         } catch(err) {
+          setOpen(false)
           console.log(err)
           history.push('/login')
         }
@@ -60,6 +66,7 @@ function App() {
 
       findUserById();
     }else {
+      setOpen(false);
       history.push('/login')
     }
   }, [])
@@ -98,18 +105,21 @@ function App() {
 
   return (
     <React.Fragment>
-      <TopPageDesign/>
-      <Switch>
-        <Route exact path="/" component={HomePage}/>
-        <Route exact path="/register" component={Register} />
-      </Switch>
 
-      <currentUserContext.Provider value = {{user,setUser,currentParking,setCurrentParking,timeRemaining}}>
+      <currentUserContext.Provider value = {{user,setUser,currentParking,setCurrentParking,timeRemaining, open, setOpen}}>
+        <TopPageDesign/>
+
+        <Switch>
+          <Route exact path="/" component={HomePage}/>
+          <Route exact path="/register" component={Register} />
+        </Switch>
+
         <Switch>
           <Route exact path="/login" component={Login}/>
           <Route exact path="/Profile" component={Profile}/>
         </Switch>
       </currentUserContext.Provider>
+
     </React.Fragment>
   );
 }

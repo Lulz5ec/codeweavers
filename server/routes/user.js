@@ -9,7 +9,7 @@ router.get('/findUserById', async (req,res) => {
     try {
         const user = await User.findOne({_id: _id}).exec();
         if(user) res.status(200).json({user});
-        throw new Error('user not found');
+        else throw new Error('user not found');
     } catch (error) {
         res.status(400).json({error : error.message});
     }

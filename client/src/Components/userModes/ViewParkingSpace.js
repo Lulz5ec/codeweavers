@@ -13,6 +13,9 @@ import axios from 'axios';
 import { Typography } from '@material-ui/core';
 import { getHours } from 'date-fns';
 
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 const useStyles = makeStyles((theme) => ({
     body : {
@@ -31,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
         display : "flex",
         flexDirection : "column",
         margin: theme.spacing(1),
-        marginBottom : theme.spacing(5),
+        marginBottom : theme.spacing(2),
         justifyContent : "start",
         alignItems : "center",
         [theme.breakpoints.down("sm")] : {
@@ -63,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
         border : "1px solid black",
         width : "50%",
         marginTop : 20,
+        marginBottom : 20,
         [theme.breakpoints.down("sm")] : {
             width : "100%",
             fontSize : 10
@@ -104,6 +108,10 @@ const useStyles = makeStyles((theme) => ({
         color: "#fff",
         background : "linear-gradient(45deg, #ff7961 20%, #ba000d 70%)",
     },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    }
     // cardHead : {
     //     paddingLeft : 20,
     //     fontSize : 15,
@@ -139,15 +147,19 @@ const ViewParkingSpace = () => {
     const [value, setValue] = useState(0)
     const {user} = useContext(currentUserContext)
 
+    let open = true
+
     useEffect (() => {
         const getAllSPaces = async () => { 
             try {
             let url = "http://localhost:5000/parkingSpace/getAll"
             const response = await axios.get(url);
             if(response) {
+                open = false
                 setParkingSpaces(Object.values(response.data.parkingspaces))
             }
         } catch (error) {
+            open = false
             console.log(error)
         }}
 
@@ -210,6 +222,7 @@ const ViewParkingSpace = () => {
     }
 
     return (
+        parkingSpaces.length ? 
         <div className = {classes.body}>
             <div className = {classes.head}>
                 <div className = {classes.name}>
@@ -271,6 +284,10 @@ const ViewParkingSpace = () => {
 
             </div>
         </div>
+        :
+        <Backdrop className={classes.backdrop} open={open}>
+            <CircularProgress color="inherit" />
+        </Backdrop>
     );
 }
 

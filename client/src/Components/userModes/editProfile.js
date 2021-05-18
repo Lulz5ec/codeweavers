@@ -5,6 +5,8 @@ import TextInput from "@material-ui/core/TextField";
 
 import axios from 'axios'
 import currentUserContext from '../../Context/useContext'
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
     container : {
@@ -61,6 +63,10 @@ const useStyles = makeStyles((theme) => ({
     },
     submitButton  : {
         marginTop : 30
+    },
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: '#fff',
     }
 }));
 
@@ -74,6 +80,7 @@ const EditProfile = (props) => {
   const [phoneNumber , setPhoneNumber] = useState(user.phone)
   const [passwordValue , setPasswordValue] = useState(user.password)
   const [userNameValue , setUserNameValue] = useState(user.username)
+  const [open,setOpen] = useState(false)
 
   const changeNameValue = (e) => {
     const {value} = e.target;
@@ -106,6 +113,7 @@ const EditProfile = (props) => {
 
   const handleClick = async (e) => {
       setErr({})
+      setOpen(true)
       try {
         const url = `http://localhost:5000/user/updateUserProfile`
         const response = await axios.put(url, {
@@ -120,16 +128,19 @@ const EditProfile = (props) => {
         if(updatedUser) {
           setUser(updatedUser);
           localStorage.setItem('user', JSON.stringify(updatedUser));
+          setOpen(false)
           alert('Your profile has been updated!')
           changeSelectedMode('Dashboard')
           changeIndicatortab(0);
         } 
         else {
+          setOpen(false)
           handleError(response.data);
         }
         // console.log(response)
 
       } catch (error) {
+        setOpen(false)
         console.log(error)
       }
 
@@ -161,6 +172,9 @@ const EditProfile = (props) => {
         </div> 
         <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleClick}>Confirm Update</Button>   
         </Card>
+        <Backdrop className={classes.backdrop} open={open}>
+          <CircularProgress color="primary" />
+        </Backdrop>
     </Container>
   );
 }

@@ -9,6 +9,9 @@ import {useHistory} from "react-router-dom";
 import axios from 'axios';
 import currentUserContext from '../Context/useContext'
 
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 const useStyles = makeStyles((theme) => ({
     container : {
         minHeight : "100vh",
@@ -43,12 +46,16 @@ const useStyles = makeStyles((theme) => ({
     submitButton  : {
         margin : 30,
         minWidth : "100%"
+    },
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: '#fff',
     }
 }))
 
 
 const Login = () => {
-  const {user,setUser,currentParking, setCurrentParking} = useContext(currentUserContext)
+  const {user,setUser,currentParking, setCurrentParking, open, setOpen} = useContext(currentUserContext)
   const [value, setValue] = useState(0)
   const [err, seterr] = useState({})
   const [userNameValue , setUserNameValue] = useState("")
@@ -77,6 +84,7 @@ const Login = () => {
   const handleClick = async (e) => {
     handleError({})
     let url = "http://localhost:5000/login"
+    setOpen(true)
     try {
       const response = await axios.post(url, {
         username : userNameValue,
@@ -98,12 +106,14 @@ const Login = () => {
             })
             setCurrentParking(parkingResponse.data)
         }
-
+        setOpen(false)
         history.push('/Profile')
       } else {
+        setOpen(false);
         handleError(response.data);
       }
     } catch (error) {
+      setOpen(false)
       console.log(error);
     }
 }
@@ -125,7 +135,12 @@ const Login = () => {
           Don't have an account? <Link to = "/register" style = {{fontSize : "17px", textDecoration : "None", color : "#0000A0"}}>Register&#8594;</Link>
         </div>
       </Card>
+      <Backdrop className={classes.backdrop} open={open}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       </Container>
+
+
   )
 }
 

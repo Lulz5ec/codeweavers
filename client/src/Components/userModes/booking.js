@@ -9,7 +9,6 @@ import Dialog from '@material-ui/core/Dialog';
 import TextInput from "@material-ui/core/TextField"
 import Grid from "@material-ui/core/Grid";
 import Paper from '@material-ui/core/Paper';
-// import Chip from '@material-ui/core/Chip';
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
@@ -17,6 +16,9 @@ import {
   KeyboardDatePicker
 } from "@material-ui/pickers";
 import { makeStyles, responsiveFontSizes } from '@material-ui/core/styles'; 
+
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   root : {
@@ -82,6 +84,10 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(1),
       background : "linear-gradient(45deg, #ff7961 20%, #ba000d 70%)",
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  }
 }))
 
 
@@ -90,8 +96,9 @@ const Booking = (props) => {
   const classes = useStyles()
   const {user,setUser,currentParking,setCurrentParking} = useContext(currentUserContext)
   const {changeSelectedMode,changeIndicatortab} = props
-
+  const [openLoader, setOpenLoader] = useState(false)
   const [open, setOpen] = useState(0)
+  const [openBackDrop,setOpenBackDrop] = useState(false)
   const [err,setErr] = useState("")
   const [availableParkingSlotId, setAvailableParkingSlotId] = useState("") 
   const [vehicleNumber,setVehicleNumber] = useState("");
@@ -137,6 +144,8 @@ const Booking = (props) => {
 
   const handleSlotId = async () => {
     // setAvailableParkingSlotId(slotId)
+    setOpenLoader(true);
+
     try {
       let URL = 'http://localhost:5000/parkingSpace/find'
       let response = await axios.get(URL)
@@ -150,14 +159,16 @@ const Booking = (props) => {
       URL = 'http://localhost:5000/parkingSpace/getDimensions'
       response = await axios.get(URL)
 
+      setOpenLoader(false)
+
       setAvailableParkingSlotId(space.spaceid)
       
       setSearchStatus(true)
-      
-      
+    
       setDimensions(response.data)
 
     } catch (error) {
+      setOpenLoader(false)
       console.log(error)
     }
   }
@@ -172,6 +183,8 @@ const Booking = (props) => {
       setErr('Vehicle Number field is mandatory.')
       return;
     }
+
+    setOpenBackDrop(true)
 
     try {
       let URL = 'http://localhost:5000/parkingSpace/confirmParking'
@@ -204,10 +217,13 @@ const Booking = (props) => {
       if(parkingResponse) {
         setCurrentParking(parkingResponse.data)
       }
+
+      setOpenBackDrop(false)
       alert('Booking Successful!!')
       changeSelectedMode('Dashboard')
       changeIndicatortab(0)
     } catch (error) {
+      setOpenBackDrop(false)
       console.log(error)
     }
   }
@@ -270,8 +286,11 @@ const Booking = (props) => {
         </Grid>
       </MuiPickersUtilsProvider>
 
-      <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleSlotId}>Find Available Parking Spots</Button>   
-      
+      <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleSlotId}>Find Available Parking Spots</Button>
+      { openLoader ? 
+        <CircularProgress/> 
+        : <></>  
+      }
       {
         searchStatus ? 
           availableParkingSlotId.length ?
@@ -295,7 +314,10 @@ const Booking = (props) => {
                   }
                 </Grid>
               </Dialog>
-            <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleBooking}>Confirm Booking</Button>   
+            <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleBooking}>Confirm Booking</Button>
+            <Backdrop className={classes.backdrop} open={openBackDrop}>
+              <CircularProgress color="primary" />
+            </Backdrop>   
           </div>
           :
           <></>

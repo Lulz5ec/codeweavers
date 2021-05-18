@@ -10,6 +10,8 @@ import Tab from '@material-ui/core/Tab';
 import axios from 'axios';
 import { Typography } from '@material-ui/core';
 
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
     body : {
@@ -74,6 +76,10 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.down("sm")] : {
             fontSize : 8
         }
+    },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
     }
     // ,root: {
     //     flexGrow: 1,
@@ -128,17 +134,19 @@ const useStyles = makeStyles((theme) => ({
 const ViewAllUsers = () => {
     const classes = useStyles();
     const [users, setUsers] = useState([])
-
+    let open = true;
     useEffect (() => {
         const getAllUsers = async () => { 
             try {
             let url = "http://localhost:5000/user/getAll"
             const response = await axios.get(url);
             if(response) {
+                open = false
                 setUsers(Object.values(response.data.users))
             }
             console.log(response)
         } catch (error) {
+            open = false
             console.log(error)
         }}
 
@@ -185,6 +193,7 @@ const ViewAllUsers = () => {
     // }
 
     return (
+        users.length ?
         <div className = {classes.body}>
             <div className = {classes.head}>
                 <div className = {classes.name}>
@@ -214,6 +223,10 @@ const ViewAllUsers = () => {
             </Table> 
             </div>
         </div>
+        :
+        <Backdrop className={classes.backdrop} open={open}>
+            <CircularProgress color="inherit" />
+        </Backdrop>
     );
 }
 
