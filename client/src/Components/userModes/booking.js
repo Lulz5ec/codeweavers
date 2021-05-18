@@ -110,6 +110,12 @@ const Booking = (props) => {
       const response = await axios.get(URL)
       const {space} = response.data 
       console.log(space)
+      if(space==undefined){
+        alert('No empty parking spot!')
+        changeSelectedMode('Dashboard')
+        changeIndicatortab(0)
+        return
+      }
       setAvailableParkingSlotId(space.spaceid)
       setSearchStatus(true)
     } catch (error) {

@@ -118,6 +118,7 @@ const EditParkSpace = (props) => {
         // console.log(response)
         if(updatedUser) {
           setNewUser(updatedUser);
+          localStorage.setItem('user', JSON.stringify(user));
           setCurrentParking({})
           alert('Parking Space updated!')
           changeSelectedMode('Dashboard')
