@@ -1,4 +1,4 @@
-import React , {useState} from "react";
+import React , {useState, useContext} from "react";
 import {Link} from "react-router-dom";
 import { Card, Container } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles"
@@ -9,6 +9,11 @@ import TextInput from "@material-ui/core/TextField";
 import {useHistory} from "react-router-dom";
 
 import axios from "axios";
+
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+import currentUserContext from '../Context/useContext'
 
 const useStyles = makeStyles((theme) => ({
     container : {
@@ -43,6 +48,10 @@ const useStyles = makeStyles((theme) => ({
     },
     submitButton  : {
         margin : 30
+    },
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: '#fff',
     }
 }))
 
@@ -71,6 +80,8 @@ const Register = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   }
+
+  const {open, setOpen} = useContext(currentUserContext)
 
   function a11yProps(index) {
       return {
@@ -110,6 +121,7 @@ const Register = () => {
 
   const handleClick = async () => {
     handleError({})
+    setOpen(true)
     const url = "http://localhost:5000/register"
     const userCategory = value === 0 ? 'Admin' : 'Driver'
     try {
@@ -123,13 +135,16 @@ const Register = () => {
           })
           const {data} = response;
           if(data === "success") {
+              setOpen(false)
               alert('Registration Sucessfull!')
               history.push('/login');
           } else {
+            setOpen(false)
             handleError(data);
           }
           console.log(response);
     } catch (error) {
+      setOpen(false)
       console.log(error);
     }
 
@@ -166,6 +181,9 @@ const Register = () => {
          have an account? <Link to = "/login" style = {{fontSize : "17px", textDecoration : "None", color : "#0000A0"}}>Login&#8594;</Link>
         </div>
       </Card>
+      <Backdrop className={classes.backdrop} open={open}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       </Container>
   )
 }

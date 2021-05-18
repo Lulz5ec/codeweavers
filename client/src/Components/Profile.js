@@ -18,6 +18,8 @@ import UpdateIcon from '@material-ui/icons/EditLocation'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import currentUserContext from '../Context/useContext';
 
@@ -32,8 +34,8 @@ import ViewAllUsers from './adminModes/viewAllUsers'
 
 import { useHistory } from 'react-router';
 
-const driverModes = ["Dashboard","Book Parking Slot","Update Parking","View Parking Space","Edit Profile","Logout"]
-const adminModes = ["Dashboard","Book Parking Slot","Update Parking","View Parking Space","View All Users","Edit Profile","Edit Parking Space","Logout"]
+const driverModes = ["Dashboard","Book Parking Slot","Update Parking","Edit Profile", "View Parking Space"]
+const adminModes = ["Dashboard","Book Parking Slot","Update Parking","Edit Profile", "View Parking Space","View All Users","Edit Parking Space"]
 
 const useStyles = makeStyles((theme) => ({
   body: {
@@ -70,6 +72,10 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")] : {
       width : "100%",
     }
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
   }
 }));
 
@@ -77,26 +83,13 @@ const Profile = () => {
   
   const [selectedMode, setSelectedMode] = useState("Dashboard");
   
-  const {user,setUser,setCurrentParking} = useContext(currentUserContext)
+  const {user,setUser,setCurrentParking,open,setOpen} = useContext(currentUserContext)
   const history = useHistory()
   const classes = useStyles()
   const [value,setValue] = useState(0)
-  // console.log(user);
-  const Logout = () => {
-    console.log("Logged out!!")
-    setUser({});
-    setCurrentParking({})
-    localStorage.setItem('user',JSON.stringify({}));
-
-    history.push('/')
-  }
 
   const handleChange = (event,newValue) => {
     const modes = user.category === "driver" ? driverModes : adminModes
-    if(modes[newValue] === "Logout") {
-      Logout();
-      return;
-    }
     if(selectedMode !== modes[newValue]) {
       if(modes[newValue] === "Book Parking Slot") {
         if(user.spaceid) {
@@ -119,253 +112,109 @@ const Profile = () => {
 
 
   return (
-  <div className={classes.body}>
-    {/* <Drawer
-      className={classes.drawer}
-      variant="permanent"
-      classes={{
-        paper: classes.drawerPaper,
-      }}
-    >
-      <Toolbar />
-      <div className={classes.drawerContainer}>
-        <List>
-          <ListItem button key={'Dashboard'} onClick= {() => setSelectedMode('Dashboard')}>
-              <ListItemIcon>  <DashboardIcon /> </ListItemIcon>
-              <ListItemText 
-              primary= "Dashboard" 
-              />
-          </ListItem>
-          <ListItem button key={'Book Parking Spot'} onClick= {() => {
-            if(user.spaceid) {
-              alert('You already have booked a spot!')
-              return
+      open ? 
+      <Backdrop className={classes.backdrop} open={open}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      :
+      <div className={classes.body}>
+    
+      <div className = {classes.root}>
+      <AppBar position="static" color="default">
+        <Tabs
+            value={value}
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="on"
+            indicatorColor="none"
+            textColor="primary"
+            classes={{ indicator: classes.Indicator}}
+            aria-label="scrollable article navigation bar"
+        >
+            {/* {pages.map((page,idx) => 
+            <Tab 
+            className={classes.Tab} 
+            label={<span>{page}</span>} 
+            icon={<DashboardIcon />}
+            key={idx}
+            />)} */}
+            <Tab 
+            className={classes.Tab} 
+            label={<span>Dashboard</span>} 
+            icon={<DashboardIcon />}
+            key={"Dashboard"}
+            />
+            <Tab 
+            className={classes.Tab} 
+            label={<span>Book Parking Slot</span>} 
+            icon={<BookIcon />}
+            key={"Book Parking Slot"}
+            />
+            <Tab 
+            className={classes.Tab} 
+            label={<span>Update Booking Parking</span>} 
+            icon={<UpdateIcon />}
+            key={"Update Parking"}
+            />
+            <Tab 
+            className={classes.Tab} 
+            label={<span>Edit Profile</span>} 
+            icon={<EditIcon />}
+            key={"Edit Profile"}
+            />
+            <Tab 
+            className={classes.Tab} 
+            label={<span>View Parking Space</span>} 
+            icon={<ViewIcon />}
+            key={"View Parking Space"}
+            />
+            {user.category === "Admin" ? 
+            <Tab 
+            className={classes.Tab} 
+            label={<span>View All Users</span>} 
+            icon={<ViewIcon />}
+            key={"View All Users"}
+            />: 
+            <></>
             }
-            setSelectedMode('Book Parking Spot')
-            }}>
-              <ListItemIcon>  <BookIcon /> </ListItemIcon>
-              <ListItemText 
-              primary= "Book Parking Spot"
-              />
-          </ListItem>
-          <ListItem button key={'Update Parking'} onClick= {() => {
-            if(!user.spaceid) {
-              alert("You haven't booked a parking slot yet")
-              return;
+            {user.category === "Admin" ? 
+            <Tab 
+            className={classes.Tab} 
+            label={<span>Edit Parking Space</span>} 
+            icon={<EditIcon />}
+            key={"Edit Parking Space"}
+            />: 
+            <></>
             }
-            setSelectedMode('Update Parking')
-            }}>
-              <ListItemIcon>  <UpdateIcon /> </ListItemIcon>
-              <ListItemText 
-              primary= "Update Parking"
-              />
-          </ListItem>
-          <ListItem button key={'View Parking Space'} onClick= {() => { 
-            if(selectedMode === 'View Parking Space')  {
-              return;
-            }
-            setSelectedMode('View Parking Space')
-            }
-          }>
-              <ListItemIcon>  <ViewIcon /> </ListItemIcon>
-              <ListItemText 
-              primary= "View Parking Space" 
-              />
-          </ListItem>
-          <ListItem button key={'Edit Profile'} onClick= {() => setSelectedMode('Edit Profile')}>
-              <ListItemIcon>  <EditIcon /> </ListItemIcon>
-              <ListItemText 
-              primary= "Edit Profile" 
-              />
-          </ListItem>
-          {
-          user.category === "admin" ?
-          <ListItem button key={'Edit Parking Space'} onClick= {() => setSelectedMode('Edit Parking Space')}>
-              <ListItemIcon>  <EditIcon /> </ListItemIcon>
-              <ListItemText 
-              primary="Edit Parking Space" 
-              />
-          </ListItem> :
-          <></>
-          }
-          <ListItem button key={'Logout'} onClick= {Logout}>
-              <ListItemIcon>  <LogoutIcon /> </ListItemIcon>
-              <ListItemText 
-              primary="Logout" 
-              />
-          </ListItem>
-        </List>
+        </Tabs>
+      </AppBar> 
       </div>
-    </Drawer> */}
-    <div className = {classes.root}>
-     <AppBar position="static" color="default">
-      <Tabs
-          value={value}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="on"
-          indicatorColor="none"
-          textColor="primary"
-          classes={{ indicator: classes.Indicator}}
-          aria-label="scrollable article navigation bar"
-      >
-          {/* {pages.map((page,idx) => 
-          <Tab 
-          className={classes.Tab} 
-          label={<span>{page}</span>} 
-          icon={<DashboardIcon />}
-          key={idx}
-          />)} */}
-          <Tab 
-          className={classes.Tab} 
-          label={<span>Dashboard</span>} 
-          icon={<DashboardIcon />}
-          key={"Dashboard"}
-          />
-          <Tab 
-          className={classes.Tab} 
-          label={<span>Book Parking Slot</span>} 
-          icon={<BookIcon />}
-          key={"Book Parking Slot"}
-          />
-          <Tab 
-          className={classes.Tab} 
-          label={<span>Update Booking Parking</span>} 
-          icon={<UpdateIcon />}
-          key={"Update Parking"}
-          />
-          <Tab 
-          className={classes.Tab} 
-          label={<span>View Parking Space</span>} 
-          icon={<ViewIcon />}
-          key={"View Parking Space"}
-          />
-          {user.category === "Admin" ? 
-          <Tab 
-          className={classes.Tab} 
-          label={<span>View All Users</span>} 
-          icon={<ViewIcon />}
-          key={"View All Users"}
-          />: 
-          <></>
-          }
-          <Tab 
-          className={classes.Tab} 
-          label={<span>Edit Profile</span>} 
-          icon={<EditIcon />}
-          key={"Edit Profile"}
-          />
-          {user.category === "Admin" ? 
-          <Tab 
-          className={classes.Tab} 
-          label={<span>Edit Parking Space</span>} 
-          icon={<EditIcon />}
-          key={"Edit Parking Space"}
-          />: 
-          <></>
-          }
-          
-          <Tab 
-          className={classes.Tab} 
-          label={<span>Logout</span>} 
-          icon={<LogoutIcon />}
-          key={"Logout"}
-          />
-      </Tabs>
-    </AppBar> 
+      <main className={classes.content}>
+        {
+          selectedMode === "Dashboard" ? <Dashboard /> : <></>
+        }
+        {
+          selectedMode === "Book Parking Slot" ? <Booking changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue}/> : <></>
+        }
+        {
+          selectedMode === "Edit Profile" ? <EditProfile changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
+        }
+        {
+          selectedMode === "Update Parking" ? <UpdateBooking changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
+        }
+        {
+          selectedMode === "View Parking Space" ? <ViewParkingSpace changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
+        }
+        {
+          selectedMode === "Edit Parking Space" ? <EditParkSpace changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
+        }
+        {
+          selectedMode === "View All Users" ? <ViewAllUsers changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
+        }
+      </main>
     </div>
-    <main className={classes.content}>
-      {
-        selectedMode === "Dashboard" ? <Dashboard /> : <></>
-      }
-      {
-        selectedMode === "Book Parking Slot" ? <Booking changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue}/> : <></>
-      }
-      {
-        selectedMode === "Edit Profile" ? <EditProfile changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
-      }
-      {
-        selectedMode === "Update Parking" ? <UpdateBooking changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
-      }
-      {
-        selectedMode === "View Parking Space" ? <ViewParkingSpace changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
-      }
-      {
-        selectedMode === "Edit Parking Space" ? <EditParkSpace changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
-      }
-      {
-        selectedMode === "View All Users" ? <ViewAllUsers changeSelectedMode = {setSelectedMode} changeIndicatortab = {setValue} /> : <></>
-      }
-    </main>
-  </div>
+    
   )
 }
 
 export default Profile
-
-
-{/* <AppBar position="static" color="default">
-  <Tabs
-      value={value}
-      // onChange={handleChange}
-      variant="scrollable"
-      scrollButtons="on"
-      indicatorColor="none"
-      textColor="primary"
-      classes={{ indicator: classes.Indicator}}
-      aria-label="scrollable article navigation bar"
-  >
-      {pages.map((page,idx) => 
-      <Tab 
-      className={classes.Tab} 
-      label={<span>{page}</span>} 
-      icon={<DashboardIcon />}
-      key={idx}
-      />)}
-      <Tab 
-      className={classes.Tab} 
-      label={<span>Dashboard</span>} 
-      icon={<DashboardIcon />}
-      key={idx}
-      />
-      <Tab 
-      className={classes.Tab} 
-      label={<span>Book Parking Slot</span>} 
-      icon={<BookIcon />}
-      key={idx}
-      />
-      <Tab 
-      className={classes.Tab} 
-      label={<span>Update Booking Parking</span>} 
-      icon={<UpdateIcon />}
-      key={idx}
-      />
-      <Tab 
-      className={classes.Tab} 
-      label={<span>View Parking Space</span>} 
-      icon={<ViewIcon />}
-      key={idx}
-      />
-      <Tab 
-      className={classes.Tab} 
-      label={<span>Edit Profile</span>} 
-      icon={<EditIcon />}
-      key={idx}
-      />
-      {user.category === "admin" ? 
-      <Tab 
-      className={classes.Tab} 
-      label={<span>Edit Parking Space</span>} 
-      icon={<EditIcon />}
-      key={idx}
-      />: 
-      <></>
-      }
-      <Tab 
-      className={classes.Tab} 
-      label={<span>Logout</span>} 
-      icon={<LogoutIcon />}
-      key={idx}
-      />
-  </Tabs>
-</AppBar> */}

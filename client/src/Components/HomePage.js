@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
         flexDirection : "column",
         justifyContent : "space-between",
         alignItems : "left",
-        [theme.breakpoints.down("md")] : {
+        [theme.breakpoints.down("sm")] : {
             width : "100%"
         }
     },
@@ -102,7 +102,7 @@ const useStyles = makeStyles((theme) => ({
         width : "100%",
         height : "100%",
         textAlign : "center",
-        [theme.breakpoints.down("sm")] : {
+        [theme.breakpoints.down("md")] : {
             fontSize : "10px"
         }
     }
@@ -129,11 +129,6 @@ const HomePage = () => {
                     </Typography>
                     </CardContent>
                 </CardActionArea>
-                <CardActions>
-                    <Button size="small" color="primary">
-                        Learn More
-                    </Button>
-                </CardActions>
             </Card>
             <Container className = {classes.btnContainer}>
                     <Button variant="contained" className = {classes.Button}>

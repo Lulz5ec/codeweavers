@@ -4,6 +4,7 @@ const validator = require('validator');
 const router = express.Router();
 const ParkingSpace = require('../models/parkingSpace.js');
 const User = require('../models/user.js');
+const ParkingRecord = require('../models/parkingRecord.js') 
 
 router.get('/getAll', async (req,res) => {
     // res.send("Register Screen for Parking space to Admin only!")
@@ -15,12 +16,29 @@ router.get('/getAll', async (req,res) => {
                 res.status(200).json({parkingspaces : parkingSpaces})
             }
         })
-    } catch {
+    } catch(error) {
         if(error.message) {
             res.status(200).json({error : error.message});
         } else {
             res.status(400).json(error);
         }
+    }
+})
+
+router.get('/getDimensions', async (req,res) => {
+    try {
+        const parkingSpaces = await ParkingSpace.find({}).exec()
+        if(!parkingSpaces.length) {
+            throw new Error('failed to load data')
+        } else {
+            const lastId = parkingSpaces[parkingSpaces.length - 1].spaceid.split('_')
+            res.status(200).json({row : lastId[1], column : lastId[2]})
+        }
+
+    } catch(error) {
+        
+            res.status(400).json({error : error.message});
+        
     }
 })
 
@@ -31,10 +49,10 @@ router.get('/getOne', async (req,res) => {
             if(err) {
                 throw new Error('failed to load data and to send for specific spaceid')
             } else {
-                res.json({space})
+                res.status(200).json({space})
             }
         })
-    } catch {
+    } catch(error) {
         if(error.message) {
             res.status(200).json({code : code, error : error.message});
         } else {
@@ -128,8 +146,21 @@ router.put('/updateParking', async (req,res) => {
 })
 
 router.put('/terminateParking', async (req,res) => {
-    const {spaceid, userid} = req.body
+    const {spaceid, userid, name} = req.body
     try {
+
+        const refferedParking = await ParkingSpace.findOne({spaceid : spaceid}).exec()
+
+        const record = new ParkingRecord({
+            spaceid : spaceid,
+            name : name,
+            entrydate : refferedParking.entrydate,
+            exitdate : refferedParking.exitdate,
+            vehiclenumber : refferedParking.vehiclenumber 
+        })
+
+        await record.save()
+
         const cancelledParkingSpace = await ParkingSpace.findOneAndUpdate({spaceid : spaceid}, {
             status : false,
             userid : null,

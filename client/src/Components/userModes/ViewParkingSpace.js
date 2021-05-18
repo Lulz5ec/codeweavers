@@ -1,4 +1,6 @@
 import React,{useContext, useEffect, useState} from 'react';
+import currentUserContext from "../../Context/useContext"
+
 import { makeStyles } from '@material-ui/core/styles';
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
@@ -10,6 +12,9 @@ import Tab from '@material-ui/core/Tab';
 import axios from 'axios';
 import { Typography } from '@material-ui/core';
 import { getHours } from 'date-fns';
+
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -29,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
         display : "flex",
         flexDirection : "column",
         margin: theme.spacing(1),
-        marginBottom : theme.spacing(5),
+        marginBottom : theme.spacing(2),
         justifyContent : "start",
         alignItems : "center",
         [theme.breakpoints.down("sm")] : {
@@ -61,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
         border : "1px solid black",
         width : "50%",
         marginTop : 20,
+        marginBottom : 20,
         [theme.breakpoints.down("sm")] : {
             width : "100%",
             fontSize : 10
@@ -90,12 +96,22 @@ const useStyles = makeStyles((theme) => ({
         color: "#fff",
         background : "linear-gradient(45deg, #2196F3 20%, #21CBF3 70%)",
     },
+    paperAlloted : {
+        padding: theme.spacing(1),
+        textAlign: 'left',
+        color: "#fff",
+        background: "linear-gradient(45deg, #c2e59c 40%, #7CFC00 60%)"
+    },
     paperEmpty: {
         padding: theme.spacing(1),
         textAlign: 'left',
         color: "#fff",
         background : "linear-gradient(45deg, #ff7961 20%, #ba000d 70%)",
     },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    }
     // cardHead : {
     //     paddingLeft : 20,
     //     fontSize : 15,
@@ -129,6 +145,9 @@ const ViewParkingSpace = () => {
     const classes = useStyles();
     const [parkingSpaces, setParkingSpaces] = useState([])
     const [value, setValue] = useState(0)
+    const {user} = useContext(currentUserContext)
+
+    let open = true
 
     useEffect (() => {
         const getAllSPaces = async () => { 
@@ -136,9 +155,11 @@ const ViewParkingSpace = () => {
             let url = "http://localhost:5000/parkingSpace/getAll"
             const response = await axios.get(url);
             if(response) {
+                open = false
                 setParkingSpaces(Object.values(response.data.parkingspaces))
             }
         } catch (error) {
+            open = false
             console.log(error)
         }}
 
@@ -201,6 +222,7 @@ const ViewParkingSpace = () => {
     }
 
     return (
+        parkingSpaces.length ? 
         <div className = {classes.body}>
             <div className = {classes.head}>
                 <div className = {classes.name}>
@@ -239,7 +261,7 @@ const ViewParkingSpace = () => {
                     <Grid container spacing={3}>
                         {parkingSpaces.map((parkingSpace) => 
                         <Grid item xs={12/dimensions.columns}>
-                        <Paper className={parkingSpace.userid ? classes.paperFilled : classes.paperEmpty}>
+                        <Paper className={parkingSpace.userid ? ((user.spaceid === parkingSpace.spaceid) ? classes.paperAlloted : classes.paperFilled) : classes.paperEmpty}>
                             {/* <Typography className = {classes.cardHead}>
                                 Space Id : {parkingSpace.spaceid.split("space_")[1]}
                             </Typography>
@@ -262,6 +284,10 @@ const ViewParkingSpace = () => {
 
             </div>
         </div>
+        :
+        <Backdrop className={classes.backdrop} open={open}>
+            <CircularProgress color="inherit" />
+        </Backdrop>
     );
 }
 

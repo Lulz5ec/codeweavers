@@ -5,16 +5,20 @@ import currentUserContext from "../../Context/useContext"
 import axios from "axios"
 
 import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog';
 import TextInput from "@material-ui/core/TextField"
 import Grid from "@material-ui/core/Grid";
-import Chip from '@material-ui/core/Chip';
+import Paper from '@material-ui/core/Paper';
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
   KeyboardDatePicker
 } from "@material-ui/pickers";
-import { makeStyles } from '@material-ui/core/styles'; 
+import { makeStyles, responsiveFontSizes } from '@material-ui/core/styles'; 
+
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   root : {
@@ -66,7 +70,23 @@ const useStyles = makeStyles((theme) => ({
     "& > *" : {
         width : "100%",
         marginBottom : 40
+    },
+    [theme.breakpoints.down("sm")] : {
+      width : "90%",
+      margin : "auto"
     }
+  },
+  paperAlloted : {
+    padding: theme.spacing(1),
+    background: "linear-gradient(45deg, #c2e59c 40%, #7CFC00 60%)"
+  },
+  paperEmpty: {
+      padding: theme.spacing(1),
+      background : "linear-gradient(45deg, #ff7961 20%, #ba000d 70%)",
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
   }
 }))
 
@@ -76,11 +96,14 @@ const Booking = (props) => {
   const classes = useStyles()
   const {user,setUser,currentParking,setCurrentParking} = useContext(currentUserContext)
   const {changeSelectedMode,changeIndicatortab} = props
-
+  const [openLoader, setOpenLoader] = useState(false)
+  const [open, setOpen] = useState(0)
+  const [openBackDrop,setOpenBackDrop] = useState(false)
   const [err,setErr] = useState("")
   const [availableParkingSlotId, setAvailableParkingSlotId] = useState("") 
   const [vehicleNumber,setVehicleNumber] = useState("");
   const [searchStatus, setSearchStatus] = useState(false)
+  const [dimensions, setDimensions] = useState({})
   const [selectedTime1, setSelectedTime1] = React.useState(
     new Date()
   );  
@@ -93,6 +116,8 @@ const Booking = (props) => {
   const [selectedTime2, setSelectedTime2] = React.useState(
     new Date()
   );
+
+  let slots = []
   
   const handleTime2Change = (time) => {
     if(time < selectedTime1) {
@@ -103,22 +128,47 @@ const Booking = (props) => {
     console.log(selectedTime2);
   };
 
+  const generateSlots = (dimesions) => {
+
+    for(let i = 1; i <= dimensions.row; i++) {
+      for(let j = 1; j <= dimesions.column; j++) {
+        if(`space_${i}_${j}` === availableParkingSlotId) {
+          slots.push(1)
+        } else {
+          slots.push(0)
+        }
+      }
+    }
+    console.log(slots)
+  }
+
   const handleSlotId = async () => {
     // setAvailableParkingSlotId(slotId)
+    setOpenLoader(true);
+
     try {
-      const URL = 'http://localhost:5000/parkingSpace/find'
-      const response = await axios.get(URL)
+      let URL = 'http://localhost:5000/parkingSpace/find'
+      let response = await axios.get(URL)
       const {space} = response.data 
-      console.log(space)
-      if(space==undefined){
-        alert('No empty parking spot!')
-        changeSelectedMode('Dashboard')
-        changeIndicatortab(0)
-        return
+      
+      if(!space) {
+        alert("All Parking Spots have been taken!")
+        return;
       }
+
+      URL = 'http://localhost:5000/parkingSpace/getDimensions'
+      response = await axios.get(URL)
+
+      setOpenLoader(false)
+
       setAvailableParkingSlotId(space.spaceid)
+      
       setSearchStatus(true)
+    
+      setDimensions(response.data)
+
     } catch (error) {
+      setOpenLoader(false)
       console.log(error)
     }
   }
@@ -133,6 +183,8 @@ const Booking = (props) => {
       setErr('Vehicle Number field is mandatory.')
       return;
     }
+
+    setOpenBackDrop(true)
 
     try {
       let URL = 'http://localhost:5000/parkingSpace/confirmParking'
@@ -165,12 +217,27 @@ const Booking = (props) => {
       if(parkingResponse) {
         setCurrentParking(parkingResponse.data)
       }
+
+      setOpenBackDrop(false)
       alert('Booking Successful!!')
       changeSelectedMode('Dashboard')
       changeIndicatortab(0)
     } catch (error) {
+      setOpenBackDrop(false)
       console.log(error)
     }
+  }
+
+  const handleViewDialog = () => {
+    setOpen(true)
+  }
+
+  const handleCloseDialog = () => {
+    setOpen(false)
+  }
+
+  if(dimensions !== {}) {
+    generateSlots(dimensions)
   }
 
   return (
@@ -219,8 +286,11 @@ const Booking = (props) => {
         </Grid>
       </MuiPickersUtilsProvider>
 
-      <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleSlotId}>Find Available Parking Spots</Button>   
-      
+      <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleSlotId}>Find Available Parking Spots</Button>
+      { openLoader ? 
+        <CircularProgress/> 
+        : <></>  
+      }
       {
         searchStatus ? 
           availableParkingSlotId.length ?
@@ -228,9 +298,26 @@ const Booking = (props) => {
             <div className={classes.inputContainer}>
               <TextInput required id="standard-required" value={vehicleNumber} onChange={changeVehicleNumber} variant="outlined" label="Vehicle Number" helperText = {err}/>    
               {/* <Alert style = {{width : "100%"}} severity="info">Assigned Parking Id = "{availableParkingSlotId}", press Confirm Button to Confirm Booking.</Alert>         */}
-              <Chip label = {"Assigned Parking Id = '" + availableParkingSlotId + "', press Confirm Button to Confirm Booking"} style = {{fontSize : "14px"}} />
+              {/* <Chip label = {"Assigned Parking Id = '" + availableParkingSlotId + "', press Confirm Button to Confirm Booking"} style = {{fontSize : "14px"}} /> */}
+              <div>
+                To view the Alloted slot <Button style={{color : "blue"}} onClick = {handleViewDialog}>Click Here&#8594;</Button>
+              </div>
             </div>
-            <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleBooking}>Confirm Booking</Button>   
+            <Dialog onClose={handleCloseDialog} open={open} style = {{margin : "auto", overflow : "hidden"}}>
+                <Grid container spacing={3} style = {{margin : "0", width : "100%"}}>
+                  {
+                    slots.map((slot) => 
+                    <Grid item xs={12/dimensions.column}>
+                    <Paper className={(slot === 1) ? classes.paperAlloted : classes.paperEmpty}>
+                    </Paper>
+                    </Grid>)
+                  }
+                </Grid>
+              </Dialog>
+            <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleBooking}>Confirm Booking</Button>
+            <Backdrop className={classes.backdrop} open={openBackDrop}>
+              <CircularProgress color="primary" />
+            </Backdrop>   
           </div>
           :
           <></>
