@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
             }
         )
 
-        ParkingSpace.deleteMany({}).then(function(){ 
+        await ParkingSpace.deleteMany({}).then(function(){ 
             console.log("Data deleted") 
             // Success 
         }).catch(function(error){
@@ -47,7 +47,6 @@ router.post('/', async (req, res) => {
                 }
 
                 const spaceId = 'space_' + i + '_' + j;
-
                 await saveParkingSpace(spaceId)
             }
         }

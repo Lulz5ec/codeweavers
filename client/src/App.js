@@ -11,6 +11,13 @@ import Profile from './Components/Profile'
 import React, { useState  , useEffect } from 'react'
 import axios from "axios"
 
+import moment from 'moment';
+import playAlert from 'alert-sound-notify'
+
+import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import CloseIcon from '@material-ui/icons/Close';
+import IconButton from '@material-ui/core/IconButton';
 
 let intervalId
 
@@ -20,7 +27,9 @@ function App() {
   const [currentParking, setCurrentParking] = useState({})
   const [timeRemaining, setTimeRemaining] = useState()
   const [open, setOpen] = useState(false)
+  const [alertOpen, setAlertOpen] = useState(false)
   const history = useHistory()
+  let count=0;
 
   useEffect(() => {
     if(window.location.pathname === "/" || window.location.pathname === "/register" || window.location.pathname === "/login") return;
@@ -79,29 +88,40 @@ function App() {
     if(currentParking.status === "active") {
         intervalId = setInterval(() => {
 
-        let currentTime = new Date()
-        let exitTime = new Date(currentParking.exitdate)
-        if(exitTime < currentTime) {
-          setCurrentParking({status: "expired", vehiclenumber : currentParking.vehiclenumber})
-          return
-        }
-        let remTime = exitTime - currentTime;
-        let hours = Math.floor((remTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        let minutes = Math.floor((remTime % (1000 * 60 * 60)) / (1000 * 60));
-        let seconds = Math.floor((remTime % (1000 * 60)) / 1000);
+          if(count<1 && moment(currentParking.exitdate).diff(new moment()) <= 60000) {
+            console.log('alert')
+            playAlert('submarine')
+            setAlertOpen(true);
+            count++;
+            console.log("count",count)
+          }
 
-        setTimeRemaining(`${hours > 9 ? hours : `0${hours}`}:${minutes > 9 ? minutes : `0${minutes}`}:${seconds > 9 ? seconds : `0${seconds}`}`)
+          let currentTime = new Date()
+          let exitTime = new Date(currentParking.exitdate)
+          if(exitTime < currentTime) {
+            setCurrentParking({status: "expired", vehiclenumber : currentParking.vehiclenumber})
+            return
+          }
+          let remTime = exitTime - currentTime;
+          let hours = Math.floor((remTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          let minutes = Math.floor((remTime % (1000 * 60 * 60)) / (1000 * 60));
+          let seconds = Math.floor((remTime % (1000 * 60)) / 1000);
+
+          setTimeRemaining(`${hours > 9 ? hours : `0${hours}`}:${minutes > 9 ? minutes : `0${minutes}`}:${seconds > 9 ? seconds : `0${seconds}`}`)
       }, 200)
 
       if(currentParking.status === "expired") {
         setTimeRemaining("")
         clearInterval(intervalId)
+        count=0
       }
     }
   }, [currentParking])
   
-
-
+  const handleClose = () => {
+    setAlertOpen(false)
+    count++;
+  }
 
   return (
     <React.Fragment>
@@ -119,7 +139,23 @@ function App() {
           <Route exact path="/Profile" component={Profile}/>
         </Switch>
       </currentUserContext.Provider>
-
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={alertOpen}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message="Your bookin will expire in 1 minute. Please update/terminate parking."
+        action={
+          <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
     </React.Fragment>
   );
 }

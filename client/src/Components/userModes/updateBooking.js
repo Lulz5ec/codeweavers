@@ -85,8 +85,7 @@ const UpdateBooking = (props) => {
       let URL = 'http://localhost:5000/parkingSpace/terminateParking'
       const response = await axios.put(URL, {
         spaceid : user.spaceid,
-        userid : user._id,
-        name : user.name
+        userid : user._id
       });
 
       const updatedUser = response.data.user

@@ -6,11 +6,6 @@ const parkingRecordSchema = mongoose.Schema({
         required : true
     },
 
-    name : {
-        type : String,
-        default : null
-    },
-
     entrydate : {
         type : Date,
         default : null

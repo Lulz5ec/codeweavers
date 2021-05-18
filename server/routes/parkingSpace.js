@@ -146,16 +146,15 @@ router.put('/updateParking', async (req,res) => {
 })
 
 router.put('/terminateParking', async (req,res) => {
-    const {spaceid, userid, name} = req.body
+    const {spaceid, userid} = req.body
     try {
 
         const refferedParking = await ParkingSpace.findOne({spaceid : spaceid}).exec()
 
         const record = new ParkingRecord({
             spaceid : spaceid,
-            name : name,
             entrydate : refferedParking.entrydate,
-            exitdate : refferedParking.exitdate,
+            exitdate : new Date(),
             vehiclenumber : refferedParking.vehiclenumber 
         })
 
