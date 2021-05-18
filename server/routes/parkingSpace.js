@@ -83,7 +83,7 @@ router.get('/isActiveParking' , async (req,res) => {
         if(parkingSpace.exitdate < new Date()) {
             res.status(200).json({status : "expired", vehiclenumber : parkingSpace.vehiclenumber})
         } 
-        res.status(200).json({status : "active", vehiclenumber : parkingSpace.vehiclenumber , exitdate : parkingSpace.exitdate})
+        else res.status(200).json({status : "active", vehiclenumber : parkingSpace.vehiclenumber , exitdate : parkingSpace.exitdate})
     } catch (error) {
         res.status(400).json({error : error.message})
     }

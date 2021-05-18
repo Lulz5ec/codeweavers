@@ -88,27 +88,27 @@ const useStyles = makeStyles((theme) => ({
 
 const ViewHistory = () => {
     const classes = useStyles();
-    const [parkingRecords, setParkingRecords] = useState([])
+    const [parkingRecords, setParkingRecords] = useState(null)
     let open = true;
     useEffect (() => {
-        const getHistory = async () => { 
-            try {
-            let url = "http://localhost:5000/history/getHistory"
-            const response = await axios.get(url);
-            console.log("history",response)
-            if(response) {
-                open = false
-                const parkings = response.data.parkingrecords
-                parkings.reverse()
-                setParkingRecords(parkings)
-            }
-            // console.log(response)
-            } catch (error) {
-                open = false
-                console.log(error)
-            }}
-
-        getHistory()
+        try {
+            const getHistory = async () => { 
+                let url = "http://localhost:5000/history/getHistory"
+                const response = await axios.get(url);
+                console.log("history",response)
+                if(response) {
+                    open = false
+                    const parkings = response.data.parkingrecords
+                    parkings.reverse()
+                    setParkingRecords(parkings)
+                }
+                // console.log(response)
+                }
+            getHistory()
+        } catch (error) {
+            open = false
+            console.log(error)
+        }
     },[])
 
     function a11yProps(index) {
@@ -132,13 +132,15 @@ const ViewHistory = () => {
     }
 
     return (
-        open ?
+        parkingRecords ?
         <div className = {classes.body}>
             <div className = {classes.head}>
                 <div className = {classes.name}>
-                    HISTORY
+                   PARKING HISTORY
                 </div>
             </div>
+            {
+            parkingRecords.length > 0 ?
             <div className = {classes.container}>
             
             <Table className = {classes.table}>
@@ -163,11 +165,17 @@ const ViewHistory = () => {
 
             </Table> 
             </div>
+            :
+            <></>
+            }
         </div>
         :
-        <Backdrop className={classes.backdrop} open={open}>
-            <CircularProgress color="inherit" />
-        </Backdrop>
+            open ? 
+            <Backdrop className={classes.backdrop} open = {open}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            :
+            <></>
     );
 }
 

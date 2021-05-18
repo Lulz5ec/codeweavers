@@ -26,8 +26,8 @@ app.use('/parkingSpace', parkingSpaceRoutes);
 app.use('/config', configRoutes);
 app.use('/history', historyRoutes);
 
-const connectionUrl = 'mongodb://127.0.0.1:27017/parkinspace';
-// const connectionUrl = 'mongodb+srv://padityak79:pc10thebest@cluster0.8ypgq.mongodb.net/ParkINSpace?retryWrites=true&w=majority';
+// const connectionUrl = 'mongodb://127.0.0.1:27017/parkinspace';
+const connectionUrl = 'mongodb+srv://padityak79:pc10thebest@cluster0.8ypgq.mongodb.net/ParkINSpace?retryWrites=true&w=majority';
 
 
 const PORT = process.env.PORT || 5000;

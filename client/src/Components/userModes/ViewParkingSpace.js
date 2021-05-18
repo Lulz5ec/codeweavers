@@ -143,7 +143,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ViewParkingSpace = () => {
     const classes = useStyles();
-    const [parkingSpaces, setParkingSpaces] = useState([])
+    const [parkingSpaces, setParkingSpaces] = useState(null)
     const [value, setValue] = useState(0)
     const {user} = useContext(currentUserContext)
 
@@ -200,7 +200,7 @@ const ViewParkingSpace = () => {
     }
 
     let dimensions = {}
-    if(parkingSpaces.length) {
+    if(parkingSpaces && parkingSpaces.length) {
         dimensions = getDimensions()
         console.log(dimensions)
     }
@@ -222,7 +222,7 @@ const ViewParkingSpace = () => {
     }
 
     return (
-        open ? 
+        parkingSpaces ? 
         <div className = {classes.body}>
             <div className = {classes.head}>
                 <div className = {classes.name}>
@@ -262,32 +262,23 @@ const ViewParkingSpace = () => {
                         {parkingSpaces.map((parkingSpace) => 
                         <Grid item xs={12/dimensions.columns}>
                         <Paper className={parkingSpace.userid ? ((user.spaceid === parkingSpace.spaceid) ? classes.paperAlloted : classes.paperFilled) : classes.paperEmpty}>
-                            {/* <Typography className = {classes.cardHead}>
-                                Space Id : {parkingSpace.spaceid.split("space_")[1]}
-                            </Typography>
-                            <div className = {classes.cardBody}>
-                                <Typography className = {classes.cardInfo}>
-                                    Occupied : {parkingSpace.userid ? "Yes" : "No"}
-                                </Typography>
-                                <Typography className = {classes.cardInfo}>
-                                    Exit Time : {parkingSpace.exitdate ? `${new Date(parkingSpace.exitdate).getHours()}:${new Date(parkingSpace.exitdate).getMinutes()}` : "N.R"}
-                                </Typography>
-                            </div> */}
+                            
                         </Paper>
                         </Grid>)
                         }
                     </Grid>
                 </div>
-                :
-                <></>
+            :
+            <></>
             }
-
             </div>
         </div>
         :
-        <Backdrop className={classes.backdrop} open={open}>
-            <CircularProgress color="inherit" />
-        </Backdrop>
+            open ? 
+            <Backdrop className={classes.backdrop} open = {open}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            : <></>
     );
 }
 

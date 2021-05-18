@@ -133,7 +133,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ViewAllUsers = () => {
     const classes = useStyles();
-    const [users, setUsers] = useState([])
+    const [users, setUsers] = useState(null)
     let open = true;
     useEffect (() => {
         const getAllUsers = async () => { 
@@ -193,7 +193,7 @@ const ViewAllUsers = () => {
     // }
 
     return (
-        users.length ?
+        users ?
         <div className = {classes.body}>
             <div className = {classes.head}>
                 <div className = {classes.name}>
@@ -201,32 +201,33 @@ const ViewAllUsers = () => {
                 </div>
             </div>
             <div className = {classes.container}>
-            
-            <Table className = {classes.table}>
-                <Thead className = {classes.tableHead}>
-                    <Tr className = {classes.tableRow}>
-                    <Th>Name</Th>
-                    <Th>Category</Th>
-                    <Th>Current Parking Status</Th>
-                    </Tr>
-                </Thead>
-                <Tbody>
-                    {users.map((user) => (
-                            <Tr className = {classes.tableRow}>
-                            <Td>    {user.name}  </Td>
-                            <Td>     {user.category}   </Td>
-                            <Td>    {user.spaceid ? "Parked" : "N.R"}   </Td>
-                            </Tr>
-                    ))}
-                </Tbody>
+                <Table className = {classes.table}>
+                    <Thead className = {classes.tableHead}>
+                        <Tr className = {classes.tableRow}>
+                        <Th>Name</Th>
+                        <Th>Category</Th>
+                        <Th>Current Parking Status</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {users.map((user) => (
+                                <Tr className = {classes.tableRow}>
+                                <Td>    {user.name}  </Td>
+                                <Td>     {user.category}   </Td>
+                                <Td>    {user.spaceid ? "Parked" : "N.R"}   </Td>
+                                </Tr>
+                        ))}
+                    </Tbody>
 
-            </Table> 
+                </Table> 
             </div>
         </div>
         :
-        <Backdrop className={classes.backdrop} open={open}>
-            <CircularProgress color="inherit" />
-        </Backdrop>
+            open ? 
+            <Backdrop className={classes.backdrop} open={open}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            : <></>
     );
 }
 
