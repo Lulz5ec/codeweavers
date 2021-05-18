@@ -6,6 +6,9 @@ const ParkingSpace = require('../models/parkingSpace.js');
 const User = require('../models/user.js');
 const ParkingRecord = require('../models/parkingRecord.js') 
 
+const nodemailer = require('nodemailer');
+const {transporter,sendEmail} = require('../email.js')
+
 router.get('/getAll', async (req,res) => {
     // res.send("Register Screen for Parking space to Admin only!")
     try {
@@ -87,7 +90,7 @@ router.get('/isActiveParking' , async (req,res) => {
 })
 
 router.put('/confirmParking', async (req,res) => {
-    const {spaceid, userid, exitdate, entrydate, vehiclenumber} = req.body
+    const {spaceid, userid, exitdate, entrydate, vehiclenumber, email} = req.body
     let code;
     try {
         if(validator.isEmpty(spaceid)) {
@@ -123,6 +126,14 @@ router.put('/confirmParking', async (req,res) => {
             {new : true}
         )
 
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: email,
+            subject: 'Booking successful',
+            text: 'Your booking has been confirmed!'
+        };
+        sendEmail(transporter,mailOptions);
+
         res.status(200).json({user : updatedUser});
     } catch (error) {
        if(error.message) {
@@ -134,11 +145,20 @@ router.put('/confirmParking', async (req,res) => {
 })
 
 router.put('/updateParking', async (req,res) => {
-    const {spaceid, exitdate} = req.body
+    const {spaceid, exitdate, email} = req.body
     try {
         const updatedParkingSpace = await ParkingSpace.findOneAndUpdate({spaceid : spaceid}, {
             exitdate : exitdate
         },{new  : true});
+
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: email,
+            subject: 'Booking updated',
+            text: 'Your booking has been updated!'
+        };
+        sendEmail(transporter,mailOptions);
+
         res.status(200).send({message : "success"})
     } catch (error) {
         res.status(400).json({error: error.message})
@@ -146,7 +166,7 @@ router.put('/updateParking', async (req,res) => {
 })
 
 router.put('/terminateParking', async (req,res) => {
-    const {spaceid, userid} = req.body
+    const {spaceid, userid, email} = req.body
     try {
 
         const refferedParking = await ParkingSpace.findOne({spaceid : spaceid}).exec()
@@ -171,6 +191,14 @@ router.put('/terminateParking', async (req,res) => {
         const updatedUser = await User.findOneAndUpdate({_id : userid}, {
             spaceid : null
         }, {new  : true})
+
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: email,
+            subject: 'Booking terminated',
+            text: 'Your booking has been terminated!'
+        };
+        sendEmail(transporter,mailOptions);
 
         // console.log(updatedUser)
 

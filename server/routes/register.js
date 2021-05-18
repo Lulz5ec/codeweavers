@@ -4,6 +4,9 @@ const validator = require('validator');
 const router = express.Router();
 const User = require('../models/user.js');
 
+const nodemailer = require('nodemailer');
+const {transporter,sendEmail} = require('../email.js')
+
 router.get('/', (req,res) => {
     res.send("Register Screen!")
 })
@@ -71,6 +74,15 @@ router.post('/', async (req,res) => {
         });
         
         await user.save();
+
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: email,
+            subject: 'Registration successful',
+            text: 'Thanks for registering!'
+        };
+        sendEmail(transporter,mailOptions);
+
         res.status(200).send('success');
     } catch (error) {
        if(error.message) {

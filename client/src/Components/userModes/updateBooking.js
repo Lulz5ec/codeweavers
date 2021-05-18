@@ -85,7 +85,8 @@ const UpdateBooking = (props) => {
       let URL = 'http://localhost:5000/parkingSpace/terminateParking'
       const response = await axios.put(URL, {
         spaceid : user.spaceid,
-        userid : user._id
+        userid : user._id,
+        email: user.email
       });
 
       const updatedUser = response.data.user
@@ -109,7 +110,8 @@ const UpdateBooking = (props) => {
       let URL = 'http://localhost:5000/parkingSpace/updateParking'
       const response = await axios.put(URL, {
         spaceid : user.spaceid,
-        exitdate : selectedTime
+        exitdate : selectedTime,
+        email: user.email
       });
 
       let parkingResponse

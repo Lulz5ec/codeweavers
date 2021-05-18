@@ -193,7 +193,8 @@ const Booking = (props) => {
         userid : user._id,
         entrydate : selectedTime1,
         exitdate : selectedTime2,
-        vehiclenumber : vehicleNumber
+        vehiclenumber : vehicleNumber,
+        email: user.email
       }) 
       const updatedUser = response.data.user;
 

@@ -132,7 +132,7 @@ const ViewHistory = () => {
     }
 
     return (
-        parkingRecords.length ?
+        open ?
         <div className = {classes.body}>
             <div className = {classes.head}>
                 <div className = {classes.name}>

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "env-cmd -f ./config/dev.env nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -14,8 +14,10 @@
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "env-cmd": "^10.1.0",
     "express": "^4.17.1",
     "mongoose": "^5.11.20",
+    "nodemailer": "^6.6.0",
     "validator": "^13.5.2"
   },
   "devDependencies": {
