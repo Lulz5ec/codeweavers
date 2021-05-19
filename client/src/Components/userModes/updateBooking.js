@@ -16,6 +16,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import ErrorPanel from '../errorPanel.js'
+
 const useStyles = makeStyles((theme) => ({
   root : {
     display : "flex",
@@ -63,6 +65,7 @@ const UpdateBooking = (props) => {
   const {user,setUser,currentParking,setCurrentParking} = useContext(currentUserContext)
   const {changeSelectedMode,changeIndicatortab} = props
   const [open, setOpen] = useState(false)
+  const [serverError, setServerError] = useState(false)
   const [err,setErr] = useState("")
   const [selectedTime, setSelectedTime] = React.useState(
     currentParking.exitdate
@@ -100,6 +103,7 @@ const UpdateBooking = (props) => {
       changeIndicatortab(0);
     } catch (error) {
       setOpen(false);
+      setServerError(true)
       console.log(error)
     }
   }
@@ -138,34 +142,37 @@ const UpdateBooking = (props) => {
   }
 
   return (
-    <div className = {classes.root}>
-      <div className = {classes.head}>
-        <div className = {classes.name}>
-          UPDATE BOOKING
+    serverError ? 
+      <ErrorPanel/>
+      :  
+      <div className = {classes.root}>
+        <div className = {classes.head}>
+          <div className = {classes.name}>
+            UPDATE BOOKING
+          </div>
         </div>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <Grid container justify="space-around">
+            <KeyboardTimePicker
+              margin="normal"
+              id="time-picker"
+              label="to hrs:min"
+              value={selectedTime}
+              onChange={handleTimeChange}
+              KeyboardButtonProps={{
+                "aria-label": "change time"
+              }}
+            />
+          </Grid>
+        </MuiPickersUtilsProvider>
+
+        <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleBooking}>UPDATE PARKING</Button>   
+        <Button className={classes.submitButton} variant="contained" color="primary" onClick = {terminateBooking}>TERMINATE PARKING</Button>   
+
+        <Backdrop className={classes.backdrop} open={open}>
+            <CircularProgress color="primary" />
+        </Backdrop>
       </div>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <Grid container justify="space-around">
-          <KeyboardTimePicker
-            margin="normal"
-            id="time-picker"
-            label="to hrs:min"
-            value={selectedTime}
-            onChange={handleTimeChange}
-            KeyboardButtonProps={{
-              "aria-label": "change time"
-            }}
-          />
-        </Grid>
-      </MuiPickersUtilsProvider>
-
-      <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleBooking}>UPDATE PARKING</Button>   
-      <Button className={classes.submitButton} variant="contained" color="primary" onClick = {terminateBooking}>TERMINATE PARKING</Button>   
-
-      <Backdrop className={classes.backdrop} open={open}>
-          <CircularProgress color="primary" />
-      </Backdrop>
-    </div>
   );
 }
 

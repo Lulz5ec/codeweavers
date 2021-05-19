@@ -19,6 +19,7 @@ import { makeStyles, responsiveFontSizes } from '@material-ui/core/styles';
 
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import ErrorPanel from '../errorPanel.js'
 
 const useStyles = makeStyles((theme) => ({
   root : {
@@ -104,6 +105,7 @@ const Booking = (props) => {
   const [vehicleNumber,setVehicleNumber] = useState("");
   const [searchStatus, setSearchStatus] = useState(false)
   const [dimensions, setDimensions] = useState({})
+  const [serverError, setServerError] = useState(false)
   const [selectedTime1, setSelectedTime1] = React.useState(
     new Date()
   );  
@@ -169,6 +171,7 @@ const Booking = (props) => {
 
     } catch (error) {
       setOpenLoader(false)
+      setServerError(true)
       console.log(error)
     }
   }
@@ -225,6 +228,7 @@ const Booking = (props) => {
       changeIndicatortab(0)
     } catch (error) {
       setOpenBackDrop(false)
+      setServerError(true)
       console.log(error)
     }
   }
@@ -242,91 +246,94 @@ const Booking = (props) => {
   }
 
   return (
-    <div className = {classes.root}>
-      <div className = {classes.head}>
-        <div className = {classes.name}>
-          BOOK A PARKING SPOT
-        </div>
-      </div>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <Grid container justify="space-around">
-        <KeyboardDatePicker
-            disableToolbar
-            variant="inline"
-            format="MM/dd/yyyy"
-            margin="normal"
-            id="date-picker-inline"
-            label="Date"
-            value={new Date()}
-            KeyboardButtonProps={{
-              'aria-label': 'change date',
-            }}
-            disabled = "true"
-          />
-          <KeyboardTimePicker
-            margin="normal"
-            id="time-picker"
-            label="from hrs:min"
-            minDateMessage = {new Date()}
-            onChange={handleTime1Change}
-            KeyboardButtonProps={{
-              "aria-label": "change time"
-            }}
-            disabled = "true"
-          />
-          <KeyboardTimePicker
-            margin="normal"
-            id="time-picker"
-            label="to hrs:min"
-            value={selectedTime2}
-            onChange={handleTime2Change}
-            KeyboardButtonProps={{
-              "aria-label": "change time"
-            }}
-          />
-        </Grid>
-      </MuiPickersUtilsProvider>
-
-      <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleSlotId}>Find Available Parking Spots</Button>
-      { openLoader ? 
-        <CircularProgress/> 
-        : <></>  
-      }
-      {
-        searchStatus ? 
-          availableParkingSlotId.length ?
-          <div className = {classes.bookingPanel}>
-            <div className={classes.inputContainer}>
-              <TextInput required id="standard-required" value={vehicleNumber} onChange={changeVehicleNumber} variant="outlined" label="Vehicle Number" helperText = {err}/>    
-              {/* <Alert style = {{width : "100%"}} severity="info">Assigned Parking Id = "{availableParkingSlotId}", press Confirm Button to Confirm Booking.</Alert>         */}
-              {/* <Chip label = {"Assigned Parking Id = '" + availableParkingSlotId + "', press Confirm Button to Confirm Booking"} style = {{fontSize : "14px"}} /> */}
-              <div>
-                To view the Alloted slot <Button style={{color : "blue"}} onClick = {handleViewDialog}>Click Here&#8594;</Button>
-              </div>
-            </div>
-            <Dialog onClose={handleCloseDialog} open={open} style = {{margin : "auto", overflow : "hidden"}}>
-                <Grid container spacing={3} style = {{margin : "0", width : "100%"}}>
-                  {
-                    slots.map((slot) => 
-                    <Grid item xs={12/dimensions.column}>
-                    <Paper className={(slot === 1) ? classes.paperAlloted : classes.paperEmpty}>
-                    </Paper>
-                    </Grid>)
-                  }
-                </Grid>
-              </Dialog>
-            <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleBooking}>Confirm Booking</Button>
-            <Backdrop className={classes.backdrop} open={openBackDrop}>
-              <CircularProgress color="primary" />
-            </Backdrop>   
+    serverError ? 
+      <ErrorPanel/>
+    :
+      <div className = {classes.root}>
+        <div className = {classes.head}>
+          <div className = {classes.name}>
+            BOOK A PARKING SPOT
           </div>
-          :
-          <></>
-        : 
-        <></>
-      }
+        </div>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <Grid container justify="space-around">
+          <KeyboardDatePicker
+              disableToolbar
+              variant="inline"
+              format="MM/dd/yyyy"
+              margin="normal"
+              id="date-picker-inline"
+              label="Date"
+              value={new Date()}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+              disabled = "true"
+            />
+            <KeyboardTimePicker
+              margin="normal"
+              id="time-picker"
+              label="from hrs:min"
+              minDateMessage = {new Date()}
+              onChange={handleTime1Change}
+              KeyboardButtonProps={{
+                "aria-label": "change time"
+              }}
+              disabled = "true"
+            />
+            <KeyboardTimePicker
+              margin="normal"
+              id="time-picker"
+              label="to hrs:min"
+              value={selectedTime2}
+              onChange={handleTime2Change}
+              KeyboardButtonProps={{
+                "aria-label": "change time"
+              }}
+            />
+          </Grid>
+        </MuiPickersUtilsProvider>
 
-    </div>
+        <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleSlotId}>Find Available Parking Spots</Button>
+        { openLoader ? 
+          <CircularProgress/> 
+          : <></>  
+        }
+        {
+          searchStatus ? 
+            availableParkingSlotId.length ?
+            <div className = {classes.bookingPanel}>
+              <div className={classes.inputContainer}>
+                <TextInput required id="standard-required" value={vehicleNumber} onChange={changeVehicleNumber} variant="outlined" label="Vehicle Number" helperText = {err}/>    
+                {/* <Alert style = {{width : "100%"}} severity="info">Assigned Parking Id = "{availableParkingSlotId}", press Confirm Button to Confirm Booking.</Alert>         */}
+                {/* <Chip label = {"Assigned Parking Id = '" + availableParkingSlotId + "', press Confirm Button to Confirm Booking"} style = {{fontSize : "14px"}} /> */}
+                <div>
+                  To view the Alloted slot <Button style={{color : "blue"}} onClick = {handleViewDialog}>Click Here&#8594;</Button>
+                </div>
+              </div>
+              <Dialog onClose={handleCloseDialog} open={open} style = {{margin : "auto", overflow : "hidden"}}>
+                  <Grid container spacing={3} style = {{margin : "0", width : "100%"}}>
+                    {
+                      slots.map((slot) => 
+                      <Grid item xs={12/dimensions.column}>
+                      <Paper className={(slot === 1) ? classes.paperAlloted : classes.paperEmpty}>
+                      </Paper>
+                      </Grid>)
+                    }
+                  </Grid>
+                </Dialog>
+              <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleBooking}>Confirm Booking</Button>
+              <Backdrop className={classes.backdrop} open={openBackDrop}>
+                <CircularProgress color="primary" />
+              </Backdrop>   
+            </div>
+            :
+            <></>
+          : 
+          <></>
+        }
+
+      </div>
   );
 }
 

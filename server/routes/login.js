@@ -11,7 +11,7 @@ router.get('/', (req,res) => {
 
 router.post('/', async (req,res) => {
     const {username,password} = req.body
-    let code;
+    let code = undefined;
     try {
         if(validator.isEmpty(username)) {
             code = 0;
@@ -20,7 +20,7 @@ router.post('/', async (req,res) => {
 
         if(validator.isEmpty(password)) {
             code = 1;
-            throw new Error('Name feild is mandatory')
+            throw new Error('Password feild is mandatory')
         }
         
         const user = await User.findOne({ username : username}).exec()
@@ -37,7 +37,7 @@ router.post('/', async (req,res) => {
         
         res.status(200).json({user});
     } catch (error) {
-        if(error.message) {
+        if(error.message && code) {
             res.status(200).json({code : code, error : error.message});
         } else {
             res.status(400).json({error});

@@ -12,8 +12,10 @@ import { Typography } from '@material-ui/core';
 
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
 import moment from 'moment'
+
+import ErrorPanel from '../errorPanel.js'
+
 
 const useStyles = makeStyles((theme) => ({
     body : {
@@ -89,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
 const ViewHistory = () => {
     const classes = useStyles();
     const [parkingRecords, setParkingRecords] = useState(null)
-    let open = true;
+    const [open, setOpen] = useState(true)
     useEffect (() => {
         try {
             const getHistory = async () => { 
@@ -97,7 +99,7 @@ const ViewHistory = () => {
                 const response = await axios.get(url);
                 console.log("history",response)
                 if(response) {
-                    open = false
+                    setOpen(false)
                     const parkings = response.data.parkingrecords
                     parkings.reverse()
                     setParkingRecords(parkings)
@@ -106,7 +108,7 @@ const ViewHistory = () => {
                 }
             getHistory()
         } catch (error) {
-            open = false
+            setOpen(false)
             console.log(error)
         }
     },[])
@@ -175,7 +177,7 @@ const ViewHistory = () => {
                 <CircularProgress color="inherit" />
             </Backdrop>
             :
-            <></>
+            <ErrorPanel/>
     );
 }
 

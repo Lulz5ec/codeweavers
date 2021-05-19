@@ -147,7 +147,7 @@ function App() {
         open={alertOpen}
         autoHideDuration={6000}
         onClose={handleClose}
-        message="Your bookin will expire in 1 minute. Please update/terminate parking."
+        message="Your booking will expire in 1 minute. Please update/terminate your booking."
         action={
           <React.Fragment>
             <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>

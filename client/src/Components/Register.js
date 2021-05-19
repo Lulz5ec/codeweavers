@@ -14,6 +14,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import currentUserContext from '../Context/useContext'
+import ErrorPanel from './errorPanel.js'
 
 const useStyles = makeStyles((theme) => ({
     container : {
@@ -71,6 +72,7 @@ const TabPanel = ({index , value}) => {
 const Register = () => {
   const [value, setValue] = useState(0)
   const [err, seterr] = useState({});
+  const [serverError, setServerError] = useState(false)
   const [nameValue, setNameValue] = useState("")
   const [emailValue , setEmailValue] = useState("")
   const [phoneNumber , setPhoneNumber] = useState("")
@@ -145,6 +147,7 @@ const Register = () => {
           console.log(response);
     } catch (error) {
       setOpen(false)
+      setServerError(true)
       console.log(error);
     }
 
@@ -152,6 +155,9 @@ const Register = () => {
 
   const classes = useStyles()  
   return (
+    serverError ?
+      <ErrorPanel/>
+    :
       <Container className={classes.container}>
       <Card className={classes.card}>
          <div className={classes.header}>Join ParkInSpace as a</div>

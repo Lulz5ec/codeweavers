@@ -13,6 +13,8 @@ import { Typography } from '@material-ui/core';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import ErrorPanel from '../errorPanel.js'
+
 const useStyles = makeStyles((theme) => ({
     body : {
         display : "flex",
@@ -81,72 +83,25 @@ const useStyles = makeStyles((theme) => ({
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
     }
-    // ,root: {
-    //     flexGrow: 1,
-    //     marginTop : 20,
-    //     minWidth : "20%",
-    //     minHeight : 400,
-    //     [theme.breakpoints.down("xs")] : {
-    //         minWidth : "80%",
-    //     }
-    // },
-    // paperFilled: {
-    //     padding: theme.spacing(1),
-    //     textAlign: 'left',
-    //     color: "#fff",
-    //     background : "linear-gradient(45deg, #2196F3 20%, #21CBF3 70%)",
-    // },
-    // paperEmpty: {
-    //     padding: theme.spacing(1),
-    //     textAlign: 'left',
-    //     color: "#fff",
-    //     background : "linear-gradient(45deg, #ff7961 20%, #ba000d 70%)",
-    // },
-    // cardHead : {
-    //     paddingLeft : 20,
-    //     fontSize : 15,
-    //     fontWeight : 400,
-    //     textTransform : "uppercase",
-    //     [theme.breakpoints.down("xs")] : {
-    //         paddingLeft : 10,
-    //         fontSize : 12,
-    //         fontWeight : 300,
-    //     }
-    // },
-    // cardBody : {
-    //     paddingLeft : 20,
-    //     paddingTop : 10,
-    //     [theme.breakpoints.down("xs")] : {
-    //         paddingLeft : 8,
-    //     }
-    // }, 
-    // cardInfo : {
-    //     fontSize : 12,
-    //     fontWeight : 300,
-    //     [theme.breakpoints.down("xs")] : {
-    //         fontSize : 8,
-    //         fontWeight : 200
-    //     }
-    // }
-    
 }));
 
 const ViewAllUsers = () => {
     const classes = useStyles();
     const [users, setUsers] = useState(null)
-    let open = true;
+    const [open, setOpen] = useState(true)
     useEffect (() => {
+        setOpen(true)
         const getAllUsers = async () => { 
             try {
             let url = "http://localhost:5000/user/getAll"
             const response = await axios.get(url);
             if(response) {
-                open = false
+                setOpen(false)
                 setUsers(Object.values(response.data.users))
             }
             console.log(response)
         } catch (error) {
-            open = false
+            setOpen(false)
             console.log(error)
         }}
 
@@ -160,15 +115,6 @@ const ViewAllUsers = () => {
         };
     }
 
-    // const getDimensions = () => {
-    //     if(parkingSpaces.length === 0) 
-    //         return {}
-
-    //     const lastId = parkingSpaces[parkingSpaces.length - 1].spaceid.split('_');
-    //     return {rows : parseInt(lastId[1]), columns : parseInt(lastId[2])}
-        
-    // }
-
     const TabPanel = ({index , value}) => {
         return (
             <div
@@ -181,16 +127,6 @@ const ViewAllUsers = () => {
           </div>
         )
     }
-
-    // const handleChange = (event, newValue) => {
-    //     setValue(newValue);
-    // }
-
-    // let dimensions = {}
-    // if(parkingSpaces.length) {
-    //     dimensions = getDimensions()
-    //     console.log(dimensions)
-    // }
 
     return (
         users ?
@@ -227,7 +163,8 @@ const ViewAllUsers = () => {
             <Backdrop className={classes.backdrop} open={open}>
                 <CircularProgress color="inherit" />
             </Backdrop>
-            : <></>
+            : 
+            <ErrorPanel />
     );
 }
 

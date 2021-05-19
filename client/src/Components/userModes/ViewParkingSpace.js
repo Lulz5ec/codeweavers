@@ -16,6 +16,7 @@ import { getHours } from 'date-fns';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import ErrorPanel from '../errorPanel.js'
 
 const useStyles = makeStyles((theme) => ({
     body : {
@@ -147,19 +148,20 @@ const ViewParkingSpace = () => {
     const [value, setValue] = useState(0)
     const {user} = useContext(currentUserContext)
 
-    let open = true
+    const [open, setOpen] = useState(true)
 
     useEffect (() => {
+        setOpen(true)
         const getAllSPaces = async () => { 
             try {
             let url = "http://localhost:5000/parkingSpace/getAll"
             const response = await axios.get(url);
             if(response) {
-                open = false
+                setOpen(false)
                 setParkingSpaces(Object.values(response.data.parkingspaces))
             }
         } catch (error) {
-            open = false
+            setOpen(false)
             console.log(error)
         }}
 
@@ -278,7 +280,8 @@ const ViewParkingSpace = () => {
             <Backdrop className={classes.backdrop} open = {open}>
                 <CircularProgress color="inherit" />
             </Backdrop>
-            : <></>
+            : 
+            <ErrorPanel/>
     );
 }
 

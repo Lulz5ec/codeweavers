@@ -8,6 +8,7 @@ import TextInput from "@material-ui/core/TextField"
 import {useHistory} from "react-router-dom";
 import axios from 'axios';
 import currentUserContext from '../Context/useContext'
+import ErrorPanel from './errorPanel.js'
 
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -58,6 +59,7 @@ const Login = () => {
   const {user,setUser,currentParking, setCurrentParking, open, setOpen} = useContext(currentUserContext)
   const [value, setValue] = useState(0)
   const [err, seterr] = useState({})
+  const [serverError, setServerError] = useState(false)
   const [userNameValue , setUserNameValue] = useState("")
   const [passwordValue , setPasswordValue] = useState("")
   const history = useHistory();
@@ -114,12 +116,16 @@ const Login = () => {
       }
     } catch (error) {
       setOpen(false)
+      setServerError(true)
       console.log(error);
     }
 }
 
   const classes = useStyles()  
   return (
+    serverError ?
+      <ErrorPanel/>
+    :
       <Container className={classes.container}>
       <Card className={classes.card}>
         <div className={classes.header}>Login To ParkInSpace</div>

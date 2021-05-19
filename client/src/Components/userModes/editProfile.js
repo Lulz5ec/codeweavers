@@ -8,6 +8,8 @@ import currentUserContext from '../../Context/useContext'
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import ErrorPanel from '../errorPanel.js'
+
 const useStyles = makeStyles((theme) => ({
     container : {
         display : "flex",
@@ -81,6 +83,7 @@ const EditProfile = (props) => {
   const [passwordValue , setPasswordValue] = useState(user.password)
   const [userNameValue , setUserNameValue] = useState(user.username)
   const [open,setOpen] = useState(false)
+  const [serverError, setServerError] = useState(false)
 
   const changeNameValue = (e) => {
     const {value} = e.target;
@@ -141,6 +144,7 @@ const EditProfile = (props) => {
 
       } catch (error) {
         setOpen(false)
+        setServerError(true)
         console.log(error)
       }
 
@@ -148,34 +152,37 @@ const EditProfile = (props) => {
   }
 
   return (
-    <Container className={classes.container}>
-        <div className = {classes.header}>
-            <div className = {classes.name}>
-                EDIT PROFILE
-            </div>
-        </div>
-        <Card className={classes.card}>
-        <div className={classes.inputContainer}>
-          <TextInput required id="standard-required" value={nameValue} onChange={changeNameValue} variant="outlined" label="Name" helperText={err.code === 0 ? err.error : ""}/>    
-        </div> 
-        <div className={classes.inputContainer}>
-          <TextInput required id="standard-required" value={userNameValue} onChange={changeUserNameValue} variant="outlined" label="User Name" helperText={err.code === 1 ? err.error : ""}/>    
-        </div> 
-        <div className={classes.inputContainer}>
-          <TextInput required id="standard-required" value={emailValue} onChange={changeEmailValue} variant="outlined" label="Email" helperText={err.code === 2 ? err.error : ""}/>    
-        </div>
-        <div className={classes.inputContainer}>
-          <TextInput required id="standard-required" value={phoneNumber} onChange={changePhoneNumber} variant="outlined" label="Contact Number" helperText={err.code === 3 ? err.error : ""}/>    
-        </div> 
-        <div className={classes.inputContainer}>
-          <TextInput required id="standard-required" value={passwordValue} type="password" onChange={changePasswordValue} variant="outlined" label="Password" helperText={err.code === 4 ? err.error : ""}/>    
-        </div> 
-        <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleClick}>Confirm Update</Button>   
-        </Card>
-        <Backdrop className={classes.backdrop} open={open}>
-          <CircularProgress color="primary" />
-        </Backdrop>
-    </Container>
+    serverError ?
+      <ErrorPanel />
+    : 
+      <Container className={classes.container}>
+          <div className = {classes.header}>
+              <div className = {classes.name}>
+                  EDIT PROFILE
+              </div>
+          </div>
+          <Card className={classes.card}>
+          <div className={classes.inputContainer}>
+            <TextInput required id="standard-required" value={nameValue} onChange={changeNameValue} variant="outlined" label="Name" helperText={err.code === 0 ? err.error : ""}/>    
+          </div> 
+          <div className={classes.inputContainer}>
+            <TextInput required id="standard-required" value={userNameValue} onChange={changeUserNameValue} variant="outlined" label="User Name" helperText={err.code === 1 ? err.error : ""}/>    
+          </div> 
+          <div className={classes.inputContainer}>
+            <TextInput required id="standard-required" value={emailValue} onChange={changeEmailValue} variant="outlined" label="Email" helperText={err.code === 2 ? err.error : ""}/>    
+          </div>
+          <div className={classes.inputContainer}>
+            <TextInput required id="standard-required" value={phoneNumber} onChange={changePhoneNumber} variant="outlined" label="Contact Number" helperText={err.code === 3 ? err.error : ""}/>    
+          </div> 
+          <div className={classes.inputContainer}>
+            <TextInput required id="standard-required" value={passwordValue} type="password" onChange={changePasswordValue} variant="outlined" label="Password" helperText={err.code === 4 ? err.error : ""}/>    
+          </div> 
+          <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleClick}>Confirm Update</Button>   
+          </Card>
+          <Backdrop className={classes.backdrop} open={open}>
+            <CircularProgress color="primary" />
+          </Backdrop>
+      </Container>
   );
 }
 

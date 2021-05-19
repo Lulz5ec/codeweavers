@@ -61,7 +61,7 @@ router.put('/updateUserProfile', async (req,res) => {
 
         res.status(200).json({user : updatedUser});
     } catch (error) {
-        if(error.message) {
+        if(error.message && code) {
             res.status(200).json({code : code, error : error.message});
         } else {
             res.status(400).json({error});
@@ -78,12 +78,10 @@ router.get('/getAll', async (req,res) => {
                 res.status(200).json({users : users})
             }
         })
-    } catch {
-        if(error.message) {
-            res.status(200).json({error : error.message});
-        } else {
+    } catch(error) {
+        
             res.status(400).json(error);
-        }
+        
     }
 })
 

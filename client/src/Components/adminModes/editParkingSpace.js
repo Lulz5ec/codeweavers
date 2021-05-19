@@ -10,6 +10,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import axios from 'axios'
 import currentUserContext from '../../Context/useContext'
+import ErrorPanel from '../errorPanel.js'
 
 const useStyles = makeStyles((theme) => ({
     container : {
@@ -81,6 +82,7 @@ const EditParkSpace = (props) => {
   const [rowValue,setRowValue] = useState()
   const [colValue,setColValue] = useState()
   const [open, setOpen] = useState(false)
+  const [serverError, setServerError] = useState(false)
 
   const changeRowValue = (e) => {
     const {value} = e.target;
@@ -124,6 +126,7 @@ const EditParkSpace = (props) => {
           changeIndicatortab(0);
         } else {
           setOpen(false)
+          setServerError(true)
           handleError(response.data);
         }
 
@@ -136,37 +139,40 @@ const EditParkSpace = (props) => {
   }
 
   return (
-    <Container className={classes.container}>
-        <div className = {classes.header}>
-            <div className = {classes.name}>
-                EDIT PARKING SPACE
-            </div>
-        </div>
-        <Card className={classes.card}>
-        <div className={classes.inputContainer}>
-          <InputLabel>Rows</InputLabel>
-          <Select labelId="demo-simple-select-helper-label" value={rowValue} onChange={changeRowValue} variant="outlined" helperText={err.code === 0 ? err.error : ""}>
-          <MenuItem value={'1'}>1</MenuItem>
-          <MenuItem value={'2'}>2</MenuItem>
-          <MenuItem value={'3'}>3</MenuItem>  
-          <MenuItem value={'4'}>4</MenuItem>  
-          </Select>  
-        </div> 
-        <div className={classes.inputContainer}>
-        <InputLabel>Columns</InputLabel>
-          <Select labelId="demo-simple-select-helper-label" value={colValue} onChange={changeColValue} variant="outlined" helperText={err.code === 0 ? err.error : ""}>
-          <MenuItem value={'1'}>1</MenuItem>
-          <MenuItem value={'2'}>2</MenuItem>
-          <MenuItem value={'3'}>3</MenuItem>  
-          <MenuItem value={'4'}>4</MenuItem>  
-          </Select>     
-        </div>
-        <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleClick}>Confirm Update</Button>   
-        </Card>
-        <Backdrop className={classes.backdrop} open={open}>
-          <CircularProgress color="primary" />
-        </Backdrop>
-    </Container>
+    serverError ?
+      <ErrorPanel/>
+    : 
+      <Container className={classes.container}>
+          <div className = {classes.header}>
+              <div className = {classes.name}>
+                  EDIT PARKING SPACE
+              </div>
+          </div>
+          <Card className={classes.card}>
+          <div className={classes.inputContainer}>
+            <InputLabel>Rows</InputLabel>
+            <Select labelId="demo-simple-select-helper-label" value={rowValue} onChange={changeRowValue} variant="outlined" helperText={err.code === 0 ? err.error : ""}>
+            <MenuItem value={'1'}>1</MenuItem>
+            <MenuItem value={'2'}>2</MenuItem>
+            <MenuItem value={'3'}>3</MenuItem>  
+            <MenuItem value={'4'}>4</MenuItem>  
+            </Select>  
+          </div> 
+          <div className={classes.inputContainer}>
+          <InputLabel>Columns</InputLabel>
+            <Select labelId="demo-simple-select-helper-label" value={colValue} onChange={changeColValue} variant="outlined" helperText={err.code === 0 ? err.error : ""}>
+            <MenuItem value={'1'}>1</MenuItem>
+            <MenuItem value={'2'}>2</MenuItem>
+            <MenuItem value={'3'}>3</MenuItem>  
+            <MenuItem value={'4'}>4</MenuItem>  
+            </Select>     
+          </div>
+          <Button className={classes.submitButton} variant="contained" color="primary" onClick = {handleClick}>Confirm Update</Button>   
+          </Card>
+          <Backdrop className={classes.backdrop} open={open}>
+            <CircularProgress color="primary" />
+          </Backdrop>
+      </Container>
   );
 }
 
