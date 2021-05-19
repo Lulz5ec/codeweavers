@@ -4,6 +4,11 @@ const router = express.Router();
 
 const ParkingSpace = require('../models/parkingSpace.js');
 const User = require('../models/user.js')
+const ParkingRecord = require('../models/parkingRecord.js') 
+
+const nodemailer = require('nodemailer');
+const {transporter,sendEmail} = require('../email.js')
+
 
 router.post('/', async (req, res) => {
 
@@ -27,6 +32,45 @@ router.post('/', async (req, res) => {
                 spaceid : null
             }
         )
+
+        try {
+            await ParkingSpace.find({}, async (err, parkingSpaces) => {
+                if(err) {
+                    throw new Error('failed to load data and to send')
+                } else {
+                    for(let parking of parkingSpaces){
+                        if(parking.status==false)continue;
+
+                        const record = new ParkingRecord({
+                            spaceid : parking.spaceid,
+                            entrydate : parking.entrydate,
+                            exitdate : new Date(),
+                            vehiclenumber : parking.vehiclenumber 
+                        })
+                
+                        await record.save()
+
+                        try {
+                            const user = await User.findOne({_id: parking.userid}).exec();
+                            if(user){
+                                const mailOptions = {
+                                    from: process.env.EMAIL,
+                                    to: user.email,
+                                    subject: 'Booking terminated',
+                                    text: 'Your booking has been terminated due to some reconstruction work.'
+                                };
+                                sendEmail(transporter,mailOptions);
+                            } 
+                            else throw new Error('user not found');
+                        } catch (error) {
+                            throw new Error('error');
+                        }
+                    }
+                }
+            })
+        } catch(error) {
+            throw new Error('error while inserting data') 
+        }
 
         await ParkingSpace.deleteMany({}).then(function(){ 
             console.log("Data deleted") 

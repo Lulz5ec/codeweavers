@@ -24,6 +24,7 @@ router.post('/', async (req,res) => {
         }
         
         const user = await User.findOne({ username : username}).exec()
+        console.log(user)
         if(!user) {
             code = 0;
             throw new Error('The Username is not identified')
