@@ -8,9 +8,12 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import InfoIcon from '@material-ui/icons/Info';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 
 import axios from 'axios';
-import { Typography } from '@material-ui/core';
+import { Button, Dialog, Typography } from '@material-ui/core';
 import { getHours } from 'date-fns';
 
 import Backdrop from '@material-ui/core/Backdrop';
@@ -93,62 +96,63 @@ const useStyles = makeStyles((theme) => ({
     },
     paperFilled: {
         padding: theme.spacing(1),
-        textAlign: 'left',
+        textAlign: 'center',
         color: "#fff",
         background : "linear-gradient(45deg, #2196F3 20%, #21CBF3 70%)",
     },
     paperAlloted : {
         padding: theme.spacing(1),
-        textAlign: 'left',
+        textAlign: 'center',
         color: "#fff",
         background: "linear-gradient(45deg, #c2e59c 40%, #7CFC00 60%)"
     },
     paperEmpty: {
         padding: theme.spacing(1),
-        textAlign: 'left',
+        textAlign: 'center',
         color: "#fff",
         background : "linear-gradient(45deg, #ff7961 20%, #ba000d 70%)",
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
+    },
+    dialog : {
+        padding : "20px"
+    },
+    card: {
+        width : 300,
+        padding : 20,
+        [theme.breakpoints.down("sm")] : {
+            padding : 0,
+            width : "100%"
+        }
+    }, cardHeader : {
+        marginBottom: 16,
+        fontSize : 20,
+        [theme.breakpoints.down("sm")] : {
+            fontSize : 12
+        }
+    },
+    pos: {
+        marginBottom: 10,
+        fontSize : 15,
+        [theme.breakpoints.down("sm")] : {
+            fontSize : 10
+        }
     }
-    // cardHead : {
-    //     paddingLeft : 20,
-    //     fontSize : 15,
-    //     fontWeight : 400,
-    //     textTransform : "uppercase",
-    //     [theme.breakpoints.down("xs")] : {
-    //         paddingLeft : 10,
-    //         fontSize : 12,
-    //         fontWeight : 300,
-    //     }
-    // },
-    // cardBody : {
-    //     paddingLeft : 20,
-    //     paddingTop : 10,
-    //     [theme.breakpoints.down("xs")] : {
-    //         paddingLeft : 8,
-    //     }
-    // }, 
-    // cardInfo : {
-    //     fontSize : 12,
-    //     fontWeight : 300,
-    //     [theme.breakpoints.down("xs")] : {
-    //         fontSize : 8,
-    //         fontWeight : 200
-    //     }
-    // }
-    
 }));
+
+
+
 
 const ViewParkingSpace = () => {
     const classes = useStyles();
     const [parkingSpaces, setParkingSpaces] = useState(null)
     const [value, setValue] = useState(0)
     const {user} = useContext(currentUserContext)
-
+    const [openDialog, setOpenDialog] = useState(false)
     const [open, setOpen] = useState(true)
+    const [selectedSpace, setSelectedSpace] = useState(null)
 
     useEffect (() => {
         setOpen(true)
@@ -204,7 +208,6 @@ const ViewParkingSpace = () => {
     let dimensions = {}
     if(parkingSpaces && parkingSpaces.length) {
         dimensions = getDimensions()
-        console.log(dimensions)
     }
 
     const getHourString = (date) => {
@@ -250,7 +253,7 @@ const ViewParkingSpace = () => {
                             <Tr className = {classes.tableRow}>
                             <Td>    {parkingSpace.spaceid.split("space_")[1]}  </Td>
                             <Td>    {parkingSpace.userid ? "Yes" : "No"}    </Td>
-                            <Td>   {parkingSpace.exitdate ? `${getHourString(new Date(parkingSpace.exitdate))}:${getMinuteString(new Date(parkingSpace.exitdate))}` : "N.R"}   </Td>
+                            <Td>    {parkingSpace.exitdate ? `${getHourString(new Date(parkingSpace.exitdate))}:${getMinuteString(new Date(parkingSpace.exitdate))}` : "N.R"}   </Td>
                             </Tr>
                     ))}
                 </Tbody>
@@ -264,11 +267,34 @@ const ViewParkingSpace = () => {
                         {parkingSpaces.map((parkingSpace) => 
                         <Grid item xs={12/dimensions.columns}>
                         <Paper className={parkingSpace.userid ? ((user.spaceid === parkingSpace.spaceid) ? classes.paperAlloted : classes.paperFilled) : classes.paperEmpty}>
-                            
+                            <Button onClick = {() => {
+                                setSelectedSpace(parkingSpace)
+                                setOpenDialog(true)
+                            }} > <InfoIcon style = {{color : "#fff"}}/> </Button>
                         </Paper>
                         </Grid>)
                         }
                     </Grid>
+                    <Dialog onClose = {() => {
+                        setOpenDialog(false)
+                    }}
+                    open= {openDialog}
+                    style = {{margin : "auto", overflow : "hidden"}}
+                    > 
+                         <Card className={classes.card} variant="outlined">
+                            <CardContent>
+                                <Typography color="textPrimary" className = {classes.cardHeader}>
+                                    Space Id    :  {selectedSpace ? selectedSpace.spaceid.split("space_")[1] : ""}
+                                </Typography>
+                                <Typography className={classes.pos} color="textSecondary">
+                                    Occupied    :  {selectedSpace ? selectedSpace.userid ? "Yes" : "No" : ""}
+                                </Typography>
+                                <Typography className={classes.pos} color="textSecondary">
+                                    Exit Time   :  {selectedSpace ? selectedSpace.exitdate ? `${getHourString(new Date(selectedSpace.exitdate))}:${getMinuteString(new Date(selectedSpace.exitdate))}` : "N.R" : ""}
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    </Dialog>
                 </div>
             :
             <></>
