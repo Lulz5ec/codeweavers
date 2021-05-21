@@ -139,9 +139,6 @@ const HomePage = () => {
                         <Link to = "/login" className = {classes.toLink}> Login </Link>
                     </Button>
 
-                    <Button variant="contained" className = {classes.Button}>
-                        <Link to = "/" className = {classes.toLink}> View Parking Space </Link>
-                    </Button>
             </Container>
         </Container>
     )
